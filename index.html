@@ -23,14 +23,14 @@ h1{font-size:24px}.sub{color:var(--muted);font-size:12px;margin-top:3px}
 input,select{width:100%;background:#050a07;border:1px solid var(--border);color:white;border-radius:10px;padding:12px;outline:none}input:focus,select:focus{border-color:var(--green)}
 button{border:0;border-radius:10px;padding:11px 16px;background:linear-gradient(135deg,#2ecc71,#1f9d55);color:white;font-weight:800;cursor:pointer}button.secondary{background:#17231c;border:1px solid var(--border)}button.danger{background:#4b1f1f;border:1px solid #793838}button:active{transform:scale(.98)}
 .small{font-size:11px;color:var(--muted);line-height:1.55}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.numbers{display:flex;gap:8px;flex-wrap:wrap}.ball{width:39px;height:39px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;border:2px solid transparent}.ball.red{background:var(--red)}.ball.black{background:var(--black)}.ball.green{background:var(--green)}.ball.hot{border-color:var(--gold);box-shadow:0 0 10px #f1c40f88}.ball.watch{border-color:#fff;box-shadow:0 0 14px #f1c40f55;transform:scale(1.05)}.ball.cold{opacity:.55;border-color:var(--blue)}
+.numbers{display:flex;gap:8px;flex-wrap:wrap}.ball{width:39px;height:39px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;border:2px solid transparent}.ball.red{background:var(--red)}.ball.black{background:var(--black)}.ball.green{background:var(--green)}.ball.hot{border-color:var(--gold);box-shadow:0 0 10px #f1c40f88}.ball.cold{opacity:.55;border-color:var(--blue)}
 .barrow{display:grid;grid-template-columns:65px 1fr 50px;align-items:center;gap:8px;margin:9px 0;font-size:11px}.bar{height:9px;border-radius:99px;background:#ffffff0a;overflow:hidden}.fill{height:100%;border-radius:99px;background:var(--green)}
 .history{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}.cell{aspect-ratio:1;border-radius:7px;display:grid;place-items:center;font-weight:900;font-size:13px}.cell.red{background:var(--red)}.cell.black{background:var(--black)}.cell.green{background:var(--green)}
 table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:9px;border-bottom:1px solid var(--border);text-align:left}th{color:var(--muted);font-size:10px;text-transform:uppercase}
 .notice{border:1px solid #f1c40f55;background:#f1c40f0b;color:#e9d17b;padding:12px;border-radius:11px;font-size:11px;line-height:1.5}
 .empty{color:var(--muted);text-align:center;padding:18px;font-size:12px}
 @media(max-width:760px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.controls{grid-template-columns:1fr}.history{grid-template-columns:repeat(8,1fr)}}
-</style>
+.next-watch{border:1px solid #2a5f43;background:linear-gradient(135deg,#0c2418,#102b1d);border-radius:18px;padding:18px;margin:14px 0}.next-watch-title{font-size:14px;letter-spacing:2px;font-weight:900}.next-main{display:flex;align-items:center;gap:16px;margin-top:14px}.next-ball{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-size:27px;font-weight:1000;border:3px solid #f1c40f;box-shadow:0 0 18px #f1c40f88}.next-ball.blink{animation:nextBlink 1s infinite}.next-also{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.next-mini{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:900;border:2px solid #f1c40f}.next-note{font-size:12px;color:#9eb0a5;margin-top:10px;line-height:1.5}@keyframes nextBlink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(1.12)}}</style>
 </head>
 <body>
 <div class="container">
@@ -92,6 +92,13 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:9px;borde
 <div class="small" style="margin-top:10px">Longest observed: <b id="longest">—</b></div>
 </section>
 
+<section class="next-watch">
+<div class="next-watch-title">🎯 NEXT NUMBERS TO WATCH</div>
+<div class="next-main"><div id="nextMain" class="next-ball blink">—</div><div><div style="font-size:16px;font-weight:900" id="nextLabel">Waiting for results</div><div style="font-size:13px;color:#9eb0a5" id="nextStrength">Data strength: Low</div></div></div>
+<div class="next-also" id="nextAlso"></div>
+<div class="next-note">Historical watchlist only — based on frequency and recency. It cannot know or guarantee the actual next roulette result.</div>
+</section>
+
 <section class="card">
 <div class="title">Hot Numbers</div>
 <div class="numbers" id="hot"><div class="empty">No data</div></div>
@@ -120,13 +127,6 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:9px;borde
 <section class="card wide">
 <div class="title">Recent Spin History • Newest → Oldest</div>
 <div class="history" id="history"><div class="empty" style="grid-column:1/-1">No results</div></div>
-</section>
-
-<section class="card wide">
-<div class="title">🎯 Next Numbers to Watch</div>
-<div class="notice"><strong>Statistical watchlist:</strong> These numbers are selected from recent history using frequency, recency and a small recent-window weighting. They are <strong>not guaranteed predictions</strong>.</div>
-<div id="nextWatch" class="numbers" style="margin-top:14px"><div class="empty">Add more roulette results to generate a watchlist.</div></div>
-<div class="small" id="nextWatchDetail" style="margin-top:10px">Waiting for enough results.</div>
 </section>
 
 <section class="card wide">
@@ -165,22 +165,18 @@ function setStatus(ok,text){
 }
 function save(){localStorage.setItem("rouletteHistory",JSON.stringify(spins.slice(0,1000)))}
 function pct(n,d){return d?((n/d)*100).toFixed(1)+"%":"0%"}
-function renderNextWatch(data){
- const box=$("nextWatch"), detail=$("nextWatchDetail");
- if(!box||!detail)return;
- if(data.length<5){box.innerHTML='<div class="empty">Add at least 5 results to generate a watchlist.</div>';detail.textContent="Waiting for more results.";return;}
- const freq=Array(37).fill(0), recent=Array(37).fill(0);
- data.forEach(n=>{if(valid(n))freq[n]++;});
- data.slice(0,20).forEach((n,i)=>{if(valid(n))recent[n]+=(20-i);});
- const scores=[...Array(37).keys()].map(n=>({n,score:(freq[n]/data.length)*0.55+(recent[n]/210)*0.45})).sort((a,b)=>b.score-a.score||a.n-b.n);
- const top=scores.slice(0,5);
- box.innerHTML=top.map(x=>`<div class="ball ${color(x.n)} watch" title="${x.n}: frequency ${freq[x.n]}">${x.n}</div>`).join("");
- detail.textContent=`Top watchlist: ${top.map(x=>x.n).join(" • ")}. Based on ${data.length} recorded spins, with extra weight on the most recent 20 results.`;
+function updateNextWatch(data){
+ const main=$("nextMain"),label=$("nextLabel"),strength=$("nextStrength"),also=$("nextAlso");
+ if(!data.length){main.textContent="—";label.textContent="Waiting for results";strength.textContent="Data strength: Low";also.innerHTML="";return;}
+ const scores=Array(37).fill(0);
+ data.forEach((n,i)=>{if(valid(n)){const recency=Math.max(0.15,1-i/Math.max(data.length,1));scores[n]+=1+2*recency;}});
+ const ranked=[...Array(37).keys()].sort((a,b)=>scores[b]-scores[a]||a-b);
+ const top=ranked.slice(0,5),level=data.length<20?"Low":data.length<50?"Medium":"Strong",n=top[0];
+ main.textContent=n;main.className=`next-ball blink ${color(n)}`;label.textContent=`Top watch: ${n}`;strength.textContent=`Data strength: ${level} • ${data.length} spins`;
+ also.innerHTML=top.slice(1).map(x=>`<div class="next-mini ${color(x)}">${x}</div>`).join("");
 }
-
 function render(){
  const data=spins.slice(0,1000), total=data.length;
- renderNextWatch(data);
  $("sample").textContent=total;
  const r=data.filter(x=>color(x)==="red").length,b=data.filter(x=>color(x)==="black").length,z=data.filter(x=>x===0).length;
  $("redPct").textContent=pct(r,total);$("blackPct").textContent=pct(b,total);$("zeroPct").textContent=pct(z,total);
@@ -193,6 +189,7 @@ function render(){
  $("longest").textContent=`R ${best.red} • B ${best.black} • 0 ${best.green}`;
  const f=Array(37).fill(0);data.forEach(n=>{if(valid(n))f[n]++});
  const sorted=[...Array(37).keys()].sort((a,b)=>f[b]-f[a]||a-b);
+ updateNextWatch(data);
  drawBalls("hot",sorted.slice(0,5),"hot");drawBalls("cold",sorted.slice(-5).reverse(),"cold");
  $("frequency").innerHTML=sorted.map(n=>`<div class="barrow"><span>${n}</span><div class="bar"><div class="fill" style="width:${total?f[n]/Math.max(...f,1)*100:0}%"></div></div><span>${f[n]}</span></div>`).join("");
  const odd=data.filter(n=>n>0&&n%2).length,even=data.filter(n=>n>0&&n%2===0).length,low=data.filter(n=>n>=1&&n<=18).length,high=data.filter(n=>n>=19).length;
