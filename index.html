@@ -23,7 +23,7 @@ h1{font-size:24px}.sub{color:var(--muted);font-size:12px;margin-top:3px}
 input,select{width:100%;background:#050a07;border:1px solid var(--border);color:white;border-radius:10px;padding:12px;outline:none}input:focus,select:focus{border-color:var(--green)}
 button{border:0;border-radius:10px;padding:11px 16px;background:linear-gradient(135deg,#2ecc71,#1f9d55);color:white;font-weight:800;cursor:pointer}button.secondary{background:#17231c;border:1px solid var(--border)}button.danger{background:#4b1f1f;border:1px solid #793838}button:active{transform:scale(.98)}
 .small{font-size:11px;color:var(--muted);line-height:1.55}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.numbers{display:flex;gap:8px;flex-wrap:wrap}.ball{width:39px;height:39px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;border:2px solid transparent}.ball.red{background:var(--red)}.ball.black{background:var(--black)}.ball.green{background:var(--green)}.ball.hot{border-color:var(--gold);box-shadow:0 0 10px #f1c40f88}.ball.cold{opacity:.55;border-color:var(--blue)}
+.numbers{display:flex;gap:8px;flex-wrap:wrap}.ball{width:39px;height:39px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;border:2px solid transparent}.ball.red{background:var(--red)}.ball.black{background:var(--black)}.ball.green{background:var(--green)}.ball.hot{border-color:var(--gold);box-shadow:0 0 10px #f1c40f88}.ball.watch{border-color:#fff;box-shadow:0 0 14px #f1c40f55;transform:scale(1.05)}.ball.cold{opacity:.55;border-color:var(--blue)}
 .barrow{display:grid;grid-template-columns:65px 1fr 50px;align-items:center;gap:8px;margin:9px 0;font-size:11px}.bar{height:9px;border-radius:99px;background:#ffffff0a;overflow:hidden}.fill{height:100%;border-radius:99px;background:var(--green)}
 .history{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}.cell{aspect-ratio:1;border-radius:7px;display:grid;place-items:center;font-weight:900;font-size:13px}.cell.red{background:var(--red)}.cell.black{background:var(--black)}.cell.green{background:var(--green)}
 table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:9px;border-bottom:1px solid var(--border);text-align:left}th{color:var(--muted);font-size:10px;text-transform:uppercase}
@@ -123,6 +123,13 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:9px;borde
 </section>
 
 <section class="card wide">
+<div class="title">🎯 Next Numbers to Watch</div>
+<div class="notice"><strong>Statistical watchlist:</strong> These numbers are selected from recent history using frequency, recency and a small recent-window weighting. They are <strong>not guaranteed predictions</strong>.</div>
+<div id="nextWatch" class="numbers" style="margin-top:14px"><div class="empty">Add more roulette results to generate a watchlist.</div></div>
+<div class="small" id="nextWatchDetail" style="margin-top:10px">Waiting for enough results.</div>
+</section>
+
+<section class="card wide">
 <div class="title">Statistical Next-Spin View</div>
 <div class="notice">
 <strong>Important:</strong> This is a probability/observation display, not a guaranteed prediction. In a fair independent roulette game, previous spins do not determine the next spin. The observed frequencies below can differ substantially from the theoretical probabilities, especially with small samples.
@@ -158,8 +165,22 @@ function setStatus(ok,text){
 }
 function save(){localStorage.setItem("rouletteHistory",JSON.stringify(spins.slice(0,1000)))}
 function pct(n,d){return d?((n/d)*100).toFixed(1)+"%":"0%"}
+function renderNextWatch(data){
+ const box=$("nextWatch"), detail=$("nextWatchDetail");
+ if(!box||!detail)return;
+ if(data.length<5){box.innerHTML='<div class="empty">Add at least 5 results to generate a watchlist.</div>';detail.textContent="Waiting for more results.";return;}
+ const freq=Array(37).fill(0), recent=Array(37).fill(0);
+ data.forEach(n=>{if(valid(n))freq[n]++;});
+ data.slice(0,20).forEach((n,i)=>{if(valid(n))recent[n]+=(20-i);});
+ const scores=[...Array(37).keys()].map(n=>({n,score:(freq[n]/data.length)*0.55+(recent[n]/210)*0.45})).sort((a,b)=>b.score-a.score||a.n-b.n);
+ const top=scores.slice(0,5);
+ box.innerHTML=top.map(x=>`<div class="ball ${color(x.n)} watch" title="${x.n}: frequency ${freq[x.n]}">${x.n}</div>`).join("");
+ detail.textContent=`Top watchlist: ${top.map(x=>x.n).join(" • ")}. Based on ${data.length} recorded spins, with extra weight on the most recent 20 results.`;
+}
+
 function render(){
  const data=spins.slice(0,1000), total=data.length;
+ renderNextWatch(data);
  $("sample").textContent=total;
  const r=data.filter(x=>color(x)==="red").length,b=data.filter(x=>color(x)==="black").length,z=data.filter(x=>x===0).length;
  $("redPct").textContent=pct(r,total);$("blackPct").textContent=pct(b,total);$("zeroPct").textContent=pct(z,total);
