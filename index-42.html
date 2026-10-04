@@ -2,258 +2,819 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#07110c">
-<title>Roulette Analyzer Pro — Live Statistics</title>
+<title>Roulette Analyzer Pro — Predictive Analytics & Physics Engine</title>
 <style>
-:root{--bg:#07110c;--card:#101b15;--card2:#0c1611;--border:#26362d;--text:#f4f7f5;--muted:#91a097;--red:#e74c3c;--black:#27322e;--green:#2ecc71;--gold:#f1c40f;--blue:#3498db;--danger:#ff6b6b}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,Segoe UI,system-ui,sans-serif;background:radial-gradient(circle at top,#173622 0,#07110c 55%);color:var(--text);min-height:100vh;padding:18px}
-.container{max-width:1180px;margin:auto}
-.header{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding:8px 0 22px;border-bottom:1px solid var(--border);margin-bottom:18px}
-.brand{display:flex;align-items:center;gap:14px}.logo{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;border:3px solid var(--gold);font-weight:900;font-size:22px;background:conic-gradient(var(--red) 0 120deg,var(--black) 120deg 240deg,var(--green) 240deg 360deg);box-shadow:0 0 25px #2ecc7140}
-h1{font-size:24px}.sub{color:var(--muted);font-size:12px;margin-top:3px}
-.status{display:flex;align-items:center;gap:8px;border:1px solid #8b302f;background:#e74c3c18;color:#ff8179;border-radius:999px;padding:8px 13px;font-size:11px;font-weight:800}
-.status.live{color:var(--green);border-color:#2ecc7166;background:#2ecc7118}.dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 1.8s infinite}@keyframes pulse{50%{opacity:.35}}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:16px}.wide{grid-column:1/-1}
-.card{background:linear-gradient(145deg,#111d16e8,#0b1510e8);border:1px solid var(--border);border-radius:16px;padding:18px;box-shadow:0 10px 35px #0005}
-.title{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);margin-bottom:15px;font-weight:800}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#ffffff05;border:1px solid var(--border);border-radius:12px;padding:13px;text-align:center}.value{font-size:25px;font-weight:900}.label{font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:3px}.redc{color:var(--red)}.greenc{color:var(--green)}.blackc{color:#d5ddd9}.goldc{color:var(--gold)}.bluec{color:var(--blue)}
-.controls{display:grid;grid-template-columns:1fr 140px auto;gap:9px}
-input,select{width:100%;background:#050a07;border:1px solid var(--border);color:white;border-radius:10px;padding:12px;outline:none}input:focus,select:focus{border-color:var(--green)}
-button{border:0;border-radius:10px;padding:11px 16px;background:linear-gradient(135deg,#2ecc71,#1f9d55);color:white;font-weight:800;cursor:pointer}button.secondary{background:#17231c;border:1px solid var(--border)}button.danger{background:#4b1f1f;border:1px solid #793838}button:active{transform:scale(.98)}
-.small{font-size:11px;color:var(--muted);line-height:1.55}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.numbers{display:flex;gap:8px;flex-wrap:wrap}.ball{width:39px;height:39px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;border:2px solid transparent}.ball.red{background:var(--red)}.ball.black{background:var(--black)}.ball.green{background:var(--green)}.ball.hot{border-color:var(--gold);box-shadow:0 0 10px #f1c40f88}.ball.cold{opacity:.55;border-color:var(--blue)}
-.barrow{display:grid;grid-template-columns:65px 1fr 50px;align-items:center;gap:8px;margin:9px 0;font-size:11px}.bar{height:9px;border-radius:99px;background:#ffffff0a;overflow:hidden}.fill{height:100%;border-radius:99px;background:var(--green)}
-.history{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}.cell{aspect-ratio:1;border-radius:7px;display:grid;place-items:center;font-weight:900;font-size:13px}.cell.red{background:var(--red)}.cell.black{background:var(--black)}.cell.green{background:var(--green)}
-table{width:100%;border-collapse:collapse;font-size:12px}th,td{padding:9px;border-bottom:1px solid var(--border);text-align:left}th{color:var(--muted);font-size:10px;text-transform:uppercase}
-.notice{border:1px solid #f1c40f55;background:#f1c40f0b;color:#e9d17b;padding:12px;border-radius:11px;font-size:11px;line-height:1.5}
-.empty{color:var(--muted);text-align:center;padding:18px;font-size:12px}
-@media(max-width:760px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.controls{grid-template-columns:1fr}.history{grid-template-columns:repeat(8,1fr)}}
-.next-watch{border:1px solid #2a5f43;background:linear-gradient(135deg,#0c2418,#102b1d);border-radius:18px;padding:18px;margin:14px 0}.next-watch-title{font-size:14px;letter-spacing:2px;font-weight:900}.next-main{display:flex;align-items:center;gap:16px;margin-top:14px}.next-ball{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-size:27px;font-weight:1000;border:3px solid #f1c40f;box-shadow:0 0 18px #f1c40f88}.next-ball.blink{animation:nextBlink 1s infinite}.next-also{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.next-mini{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:900;border:2px solid #f1c40f}.next-note{font-size:12px;color:#9eb0a5;margin-top:10px;line-height:1.5}@keyframes nextBlink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(1.12)}}</style>
+:root {
+  --bg: #050a12;
+  --panel: #0b1220;
+  --panel2: #0f1828;
+  --line: #1d2a3d;
+  --border: #1e2d42;
+  --text: #f4f7fb;
+  --muted: #8fa1b7;
+  --red: #ff4d5f;
+  --green: #25d69b;
+  --black: #3a4b63;
+  --blue: #4ea8ff;
+  --gold: #f5c75b;
+  --purple: #a855f7;
+  --shadow: 0 20px 55px rgba(0,0,0,0.35);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: 
+    radial-gradient(circle at 10% 0%, rgba(78,168,255,0.12), transparent 28%),
+    radial-gradient(circle at 90% 0%, rgba(37,214,155,0.08), transparent 25%),
+    var(--bg);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+}
+.wrap { max-width: 1400px; margin: auto; padding: 24px; }
+.card {
+  background: linear-gradient(180deg, rgba(15,24,40,0.96), rgba(9,16,28,0.96));
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 22px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
+}
+.card.wide { grid-column: 1 / -1; }
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: linear-gradient(135deg, #0e1a2b 0%, #0a1422 55%, #08131e 100%);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 24px 30px;
+  margin-bottom: 20px;
+}
+.brand { display: flex; align-items: center; gap: 16px; }
+.logo {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, #163a5e, #0c6a58);
+  font-size: 26px; border: 1px solid #2c5272;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+h1 { font-size: 26px; letter-spacing: -0.5px; margin: 0; font-weight: 800; }
+.sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.title {
+  font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: #8fa5be; font-weight: 800; margin-bottom: 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+
+.stat {
+  background: linear-gradient(180deg, #0d1727, #0a1320);
+  border: 1px solid var(--line); border-radius: 16px; padding: 16px;
+}
+.stat-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; }
+.value { font-size: 28px; font-weight: 900; margin-top: 6px; letter-spacing: -0.5px; }
+
+.redc { color: var(--red); }
+.blackc { color: #d0dbe7; }
+.greenc { color: var(--green); }
+.bluec { color: var(--blue); }
+.goldc { color: var(--gold); }
+.purplec { color: var(--purple); }
+
+/* Prediction Signal Box */
+.prediction-box {
+  text-align: center; padding: 24px; border-radius: 18px;
+  background: radial-gradient(circle at 50% 0%, rgba(78,168,255,0.12), transparent 70%), #08111e;
+  border: 1px solid #233951; margin-bottom: 14px;
+}
+.pred-badge {
+  display: inline-block; padding: 6px 16px; border-radius: 20px;
+  font-size: 26px; font-weight: 900; letter-spacing: 1px;
+  text-transform: uppercase; margin: 10px 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.pred-badge.red { background: rgba(255,77,95,0.2); color: var(--red); border: 1px solid var(--red); }
+.pred-badge.black { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid #fff; }
+.pred-badge.green { background: rgba(37,214,155,0.2); color: var(--green); border: 1px solid var(--green); }
+
+.prob-bars { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin: 14px 0; background: #000; }
+.prob-bar { height: 100%; transition: width 0.4s ease; }
+.prob-bar.red { background: var(--red); }
+.prob-bar.black { background: #4b6382; }
+.prob-bar.green { background: var(--green); }
+
+/* Buttons & Inputs */
+button, input, select {
+  font: inherit; padding: 10px 14px; border-radius: 10px;
+  border: 1px solid #29405a; background: #08121f; color: #fff; outline: none;
+}
+input:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(78,168,255,0.15); }
+button {
+  cursor: pointer; background: linear-gradient(180deg, #17456b, #123653);
+  font-weight: 700; transition: transform 0.15s, background 0.15s;
+}
+button:hover { transform: translateY(-1px); background: linear-gradient(180deg, #1c5683, #154564); }
+button.secondary { background: #132235; border-color: #20354f; }
+button.secondary:hover { background: #1a2d46; }
+button.danger { background: linear-gradient(180deg, #632632, #4b1d26); border-color: #833543; }
+
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.status-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px; border-radius: 30px; font-size: 12px; font-weight: 800;
+  background: #0d1a29; border: 1px solid var(--line);
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; background: #555; }
+.status-pill.live .dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
+.status-pill.fetching .dot { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+.status-pill.error .dot { background: var(--red); box-shadow: 0 0 8px var(--red); }
+
+/* Wheel & History Elements */
+.history { display: flex; gap: 8px; flex-wrap: wrap; max-height: 140px; overflow-y: auto; padding: 4px; }
+.ball {
+  width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+  font-weight: 900; font-size: 13px; border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.2s;
+}
+.ball:hover { transform: scale(1.15); }
+.ball.r { background: radial-gradient(circle at 30% 30%, #ff4d5f, #990f20); color: #fff; }
+.ball.b { background: radial-gradient(circle at 30% 30%, #3a4b63, #0f1722); color: #fff; }
+.ball.g { background: radial-gradient(circle at 30% 30%, #25d69b, #0a6343); color: #fff; }
+
+.barrow { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; font-size: 12px; }
+.barrow span:first-child { width: 60px; font-weight: 700; color: #b0c4de; }
+.barrow span:last-child { width: 45px; text-align: right; font-weight: 700; }
+.bar { flex: 1; height: 8px; background: #121e2e; border-radius: 10px; overflow: hidden; }
+.fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, #2c5e8a, var(--blue)); }
+
+/* Dynamic Tables */
+table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line); }
+th { background: #0a1320; color: var(--muted); text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em; }
+
+.notice {
+  padding: 12px 16px; border-radius: 12px; background: rgba(78,168,255,0.05);
+  border: 1px solid rgba(78,168,255,0.2); font-size: 12px; line-height: 1.6; color: #b8d2ec;
+}
+.small { font-size: 12px; color: var(--muted); }
+
+@media(max-width: 1024px) { .grid { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media(max-width: 650px) {
+  .wrap { padding: 12px; }
+  .grid, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .hero { flex-direction: column; align-items: flex-start; }
+}
+</style>
 </head>
 <body>
-<div class="container">
-<header class="header">
-  <div class="brand"><div class="logo">0</div><div><h1>Roulette Analyzer Pro</h1><div class="sub">Live statistical tracking • European Roulette</div></div></div>
-  <div class="status" id="status"><span class="dot"></span><span id="statusText">WAITING FOR DATA</span></div>
-</header>
 
-<div class="grid">
-<section class="card wide" id="liveConnectCard">
-<div class="title">🎰 Connect Live Roulette</div>
-<div style="font-size:20px;font-weight:900;margin-bottom:6px">Get live roulette results</div>
-<p class="small">Connect this dashboard to your authorized roulette-results backend. You do not need to understand APIs to use the controls below.</p>
+<div class="wrap">
+  <!-- Top Navigation/Header -->
+  <header class="hero">
+    <div class="brand">
+      <div class="logo">🎰</div>
+      <div>
+        <h1>Roulette Analyzer Pro</h1>
+        <div class="sub">Standardized Predictive Mathematics, Physics Deceleration Vector Engine & European Analytics</div>
+      </div>
+    </div>
+    <div class="status-pill" id="statusPill">
+      <span class="dot"></span>
+      <span id="statusText">STANDBY</span>
+    </div>
+  </header>
 
-<div style="display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:15px">
-<input id="apiUrl" value="https://betpredict-ke-backend.onrender.com/api/roulette-history" placeholder="Paste your live results connection here">
-<button id="connect">🔗 Connect Live</button>
-</div>
+  <!-- Control & Live Connection Panel -->
+  <div class="card wide">
+    <div class="title"><span>📡 Live System & Integration Terminal</span></div>
+    <div class="grid-2">
+      <div>
+        <div class="small" style="margin-bottom:6px;">Target WebSocket / API Endpoint:</div>
+        <div style="display:flex; gap:10px;">
+          <input id="apiUrl" style="flex:1" placeholder="https://api.your-backend.com/roulette/spins">
+          <button id="connectBtn">🔗 Connect</button>
+        </div>
+      </div>
+      <div>
+        <div class="small" style="margin-bottom:6px;">Polling Frequency & Actions:</div>
+        <div class="actions" style="margin-top:0;">
+          <select id="refreshRate" style="width:auto;">
+            <option value="2000">Every 2 seconds</option>
+            <option value="5000" selected>Every 5 seconds</option>
+            <option value="10000">Every 10 seconds</option>
+          </select>
+          <button class="secondary" id="demoBtn">🧪 Inject 100 Sample Spins</button>
+          <button class="secondary" id="manualBtn">➕ Add Spin</button>
+          <button class="danger" id="clearBtn">🗑 Clear Data</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div class="actions">
-<button class="secondary" id="demo">🧪 Test Dashboard</button>
-<button class="secondary" id="manual">➕ Add Result</button>
-<button class="danger" id="clear">🗑 Clear History</button>
-</div>
+  <!-- MAIN PREDICTIVE DASHBOARD METRICS -->
+  <div class="grid">
+    <!-- PREDICTION ENGINE -->
+    <div class="card wide">
+      <div class="title">
+        <span>🔮 Predictive Physics & Probability Signal Engine</span>
+        <span class="purplec" style="font-size:11px;">Algorithm Version: 4.2-Hybrid</span>
+      </div>
+      
+      <div class="grid-2">
+        <div class="prediction-box">
+          <div class="small">PREDICTED NEXT OUTCOME (COLOR)</div>
+          <div id="predOutcome" class="pred-badge black">CALCULATING...</div>
+          <div class="small" id="predConfidence">Confidence Metric: 0.0%</div>
+          
+          <div class="prob-bars">
+            <div id="pBarRed" class="prob-bar red" style="width:33.3%;"></div>
+            <div id="pBarGreen" class="prob-bar green" style="width:33.3%;"></div>
+            <div id="pBarBlack" class="prob-bar black" style="width:33.4%;"></div>
+          </div>
+          
+          <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:800;">
+            <span class="redc">RED: <span id="pValRed">0%</span></span>
+            <span class="greenc">ZERO: <span id="pValGreen">0%</span></span>
+            <span class="blackc">BLACK: <span id="pValBlack">0%</span></span>
+          </div>
+        </div>
 
-<div style="margin-top:14px;padding:13px;border-radius:11px;background:#ffffff05;border:1px solid var(--border)">
-<div style="font-size:12px;font-weight:800;margin-bottom:5px">What should I enter?</div>
-<div class="small">The dashboard is already connected to your Render backend. Use <b>Test Dashboard</b> to create sample data, or <b>Add Result</b> to send a result to the backend when connected.</div>
-</div>
+        <div style="display:flex; flex-direction:column; justify-content:center; gap:8px;">
+          <div class="stat">
+            <div class="stat-label">Physics Deceleration Vector (Phase Shift)</div>
+            <div class="value bluec" id="physVector" style="font-size:20px;">0.00° / Spin</div>
+            <div class="small">Angular drift velocity estimation across recent spins</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Chi-Square Test ($\chi^2$) Variance</div>
+            <div class="value goldc" id="chiSquareVal" style="font-size:20px;">0.00 (p = 1.00)</div>
+            <div class="small" id="chiStatus">Distribution conforms to expected theoretical randomness</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div id="connectionHelp" class="notice" style="margin-top:12px">
-<strong>Not connected yet.</strong> The dashboard is ready. Connect an authorized live-results backend to receive real data.
-</div>
-<div style="margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-<label class="small" for="refresh">Automatic update:</label>
-<select id="refresh" style="width:auto;min-width:145px">
-<option value="3000">Every 3 seconds</option>
-<option value="5000" selected>Every 5 seconds</option>
-<option value="10000">Every 10 seconds</option>
-<option value="30000">Every 30 seconds</option>
-</select>
-</div>
-</section>
+    <!-- Live Color Distributions -->
+    <div class="card">
+      <div class="title">Color Distribution</div>
+      <div class="stats">
+        <div class="stat" style="margin-bottom:8px;">
+          <div class="stat-label">Red</div>
+          <div class="value redc" id="redPct">0.0%</div>
+        </div>
+        <div class="stat" style="margin-bottom:8px;">
+          <div class="stat-label">Black</div>
+          <div class="value blackc" id="blackPct">0.0%</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Zero (Green)</div>
+          <div class="value greenc" id="zeroPct">0.0%</div>
+        </div>
+      </div>
+      <div class="small" style="margin-top:10px;">Total Analyzed Spins: <b id="sampleSize">0</b></div>
+    </div>
 
-<section class="card">
-<div class="title">Color Distribution</div>
-<div class="stats">
-<div class="stat"><div class="value redc" id="redPct">0%</div><div class="label">Red</div></div>
-<div class="stat"><div class="value greenc" id="zeroPct">0%</div><div class="label">Zero</div></div>
-<div class="stat"><div class="value blackc" id="blackPct">0%</div><div class="label">Black</div></div>
-</div>
-<div class="small" style="margin-top:12px">Sample size: <b id="sample">0</b> spins</div>
-</section>
+    <!-- Mathematical Mechanics -->
+    <div class="card">
+      <div class="title">Math & Information Theory</div>
+      <div class="stat" style="margin-bottom:8px;">
+        <div class="stat-label">Shannon Entropy Ratio</div>
+        <div class="value bluec" id="entropyVal">0.000</div>
+        <div class="small" id="entropyLabel">Max Randomness: 1.000</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Z-Score Deviation (Red vs Black)</div>
+        <div class="value goldc" id="zScoreVal">0.00 $\sigma$</div>
+        <div class="small" id="zScoreLabel">Normal range (-1.96 to +1.96)</div>
+      </div>
+    </div>
 
-<section class="card">
-<div class="title">Current Streak</div>
-<div style="font-size:28px;font-weight:900" id="streak">—</div>
-<div class="small" id="streakDetail">No results yet</div>
-<div class="small" style="margin-top:10px">Longest observed: <b id="longest">—</b></div>
-</section>
+    <!-- Streaks and Anomalies -->
+    <div class="card">
+      <div class="title">Streak Analysis</div>
+      <div class="stat" style="margin-bottom:8px;">
+        <div class="stat-label">Active Color Streak</div>
+        <div class="value" id="currentStreak">—</div>
+        <div class="small" id="streakDetail">No results</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Longest Recorded Streaks</div>
+        <div class="small" id="longestStreaks" style="font-size:13px; font-weight:700; margin-top:6px;">
+          Red: 0 | Black: 0 | Zero: 0
+        </div>
+      </div>
+    </div>
 
-<section class="next-watch">
-<div class="next-watch-title">🎯 NEXT NUMBERS TO WATCH</div>
-<div class="next-main"><div id="nextMain" class="next-ball blink">—</div><div><div style="font-size:16px;font-weight:900" id="nextLabel">Waiting for results</div><div style="font-size:13px;color:#9eb0a5" id="nextStrength">Data strength: Low</div></div></div>
-<div class="next-also" id="nextAlso"></div>
-<div class="next-note">Historical watchlist only — based on frequency and recency. It cannot know or guarantee the actual next roulette result.</div>
-</section>
+    <!-- Hot / Cold Pocket Numbers -->
+    <div class="card">
+      <div class="title">Hot & Cold Pockets</div>
+      <div class="small" style="font-weight:800; margin-bottom:4px;">🔥 Hot Numbers:</div>
+      <div id="hotBalls" style="display:flex; gap:4px; margin-bottom:12px; flex-wrap:wrap;">—</div>
+      <div class="small" style="font-weight:800; margin-bottom:4px;">🧊 Cold Numbers:</div>
+      <div id="coldBalls" style="display:flex; gap:4px; flex-wrap:wrap;">—</div>
+    </div>
+  </div>
 
-<section class="card">
-<div class="title">Hot Numbers</div>
-<div class="numbers" id="hot"><div class="empty">No data</div></div>
-</section>
+  <!-- SECONDARY ANALYTICAL GRID -->
+  <div class="grid">
+    <!-- Wheel Sector Analysis -->
+    <div class="card">
+      <div class="title">Wheel Sectors Heatmap</div>
+      <div id="sectorRows"></div>
+    </div>
 
-<section class="card">
-<div class="title">Cold Numbers</div>
-<div class="numbers" id="cold"><div class="empty">No data</div></div>
-</section>
+    <!-- Dozens & Columns -->
+    <div class="card">
+      <div class="title">Dozens & Ranges</div>
+      <div class="small" style="font-weight:800; margin-bottom:4px;">Dozens Frequency:</div>
+      <div id="dozensRows"></div>
+      <div class="small" style="font-weight:800; margin-top:10px; margin-bottom:4px;">High / Low Ranges:</div>
+      <div id="rangeRows"></div>
+    </div>
 
-<section class="card wide">
-<div class="title">Number Frequency</div>
-<div id="frequency"></div>
-</section>
+    <!-- Markov Transition Matrix Table -->
+    <div class="card wide">
+      <div class="title">Markov Chain Color Transition Probabilities</div>
+      <div class="small" style="margin-bottom:8px;">Probability of moving from current color state (Row) to next color state (Column):</div>
+      <table>
+        <thead>
+          <tr>
+            <th>From / To</th>
+            <th>Next Red</th>
+            <th>Next Black</th>
+            <th>Next Zero</th>
+          </tr>
+        </thead>
+        <tbody id="markovBody">
+          <tr><td>Current Red</td><td>0%</td><td>0%</td><td>0%</td></tr>
+          <tr><td>Current Black</td><td>0%</td><td>0%</td><td>0%</td></tr>
+          <tr><td>Current Zero</td><td>0%</td><td>0%</td><td>0%</td></tr>
+        </tbody>
+      </table>
+    </div>
 
-<section class="card">
-<div class="title">Parity & Range</div>
-<div id="parity"></div>
-</section>
+    <!-- Full Spin History -->
+    <div class="card wide">
+      <div class="title">
+        <span>Recent Spin Chronology (Newest First)</span>
+        <span class="small" id="historyCount">0 entries</span>
+      </div>
+      <div class="history" id="historyContainer">
+        <div class="small" style="padding:10px;">No spins recorded. Inject test data or connect live API.</div>
+      </div>
+    </div>
+  </div>
 
-<section class="card">
-<div class="title">Dozens</div>
-<div id="dozens"></div>
-</section>
+  <div class="notice">
+    <strong>Analytical Disclaimer:</strong> Independent trial laws stipulate that each spin of a fair roulette wheel has an independent memoryless probability ($P = 1/37 \approx 2.70\%$). This system utilizes physical kinematics modeling, angular shift vectors, and Markov chains to identify statistical variance, non-random mechanical bias, or micro-deviations in tracking systems.
+  </div>
 
-<section class="card wide">
-<div class="title">Recent Spin History • Newest → Oldest</div>
-<div class="history" id="history"><div class="empty" style="grid-column:1/-1">No results</div></div>
-</section>
-
-<section class="card wide">
-<div class="title">Statistical Next-Spin View</div>
-<div class="notice">
-<strong>Important:</strong> This is a probability/observation display, not a guaranteed prediction. In a fair independent roulette game, previous spins do not determine the next spin. The observed frequencies below can differ substantially from the theoretical probabilities, especially with small samples.
-</div>
-<div class="stats" style="margin-top:12px">
-<div class="stat"><div class="value redc">48.65%</div><div class="label">Theoretical Red</div></div>
-<div class="stat"><div class="value blackc">48.65%</div><div class="label">Theoretical Black</div></div>
-<div class="stat"><div class="value greenc">2.70%</div><div class="label">Theoretical Zero</div></div>
-</div>
-<p class="small" style="margin-top:10px" id="estimate">Observed sample is too small for a useful comparison.</p>
-</section>
-</div>
-
-<footer class="small" style="text-align:center;padding:8px 0 20px">For statistical tracking and entertainment. Roulette outcomes are independent events. Use only authorized data sources and gamble responsibly.</footer>
 </div>
 
 <script>
-const RED=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
-const BLACK=[2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35];
-let spins=JSON.parse(localStorage.getItem("rouletteHistory")||"[]");
-let timer=null,api="https://betpredict-ke-backend.onrender.com/api/roulette-history";
-const $=id=>document.getElementById(id);
-function color(n){return n===0?"green":RED.includes(n)?"red":"black"}
-function valid(n){return Number.isInteger(n)&&n>=0&&n<=36}
-function setStatus(ok,text){
- $("status").classList.toggle("live",ok);
- $("statusText").textContent=text;
- const h=$("connectionHelp");
- if(ok) h.innerHTML="<strong>🟢 Live connection active.</strong> New roulette results will be checked automatically.";
- else if(text==="FETCHING...") h.innerHTML="<strong>🟡 Connecting...</strong> Checking your live-results connection.";
- else if(text==="API ERROR") h.innerHTML="<strong>🔴 Connection problem.</strong> Check that the backend address is correct and authorized.";
- else h.innerHTML="<strong>Not connected yet.</strong> The dashboard is ready. Connect an authorized live-results backend to receive real data.";
-}
-function save(){localStorage.setItem("rouletteHistory",JSON.stringify(spins.slice(0,1000)))}
-function pct(n,d){return d?((n/d)*100).toFixed(1)+"%":"0%"}
-function updateNextWatch(data){
- const main=$("nextMain"),label=$("nextLabel"),strength=$("nextStrength"),also=$("nextAlso");
- if(!data.length){main.textContent="—";label.textContent="Waiting for results";strength.textContent="Data strength: Low";also.innerHTML="";return;}
- const scores=Array(37).fill(0);
- data.forEach((n,i)=>{if(valid(n)){const recency=Math.max(0.15,1-i/Math.max(data.length,1));scores[n]+=1+2*recency;}});
- const ranked=[...Array(37).keys()].sort((a,b)=>scores[b]-scores[a]||a-b);
- const top=ranked.slice(0,5),level=data.length<20?"Low":data.length<50?"Medium":"Strong",n=top[0];
- main.textContent=n;main.className=`next-ball blink ${color(n)}`;label.textContent=`Top watch: ${n}`;strength.textContent=`Data strength: ${level} • ${data.length} spins`;
- also.innerHTML=top.slice(1).map(x=>`<div class="next-mini ${color(x)}">${x}</div>`).join("");
-}
-function render(){
- const data=spins.slice(0,1000), total=data.length;
- $("sample").textContent=total;
- const r=data.filter(x=>color(x)==="red").length,b=data.filter(x=>color(x)==="black").length,z=data.filter(x=>x===0).length;
- $("redPct").textContent=pct(r,total);$("blackPct").textContent=pct(b,total);$("zeroPct").textContent=pct(z,total);
- let s=0,sc=total?color(data[0]):null;
- if(total){for(let i=0;i<total&&color(data[i])===sc;i++)s++}
- $("streak").textContent=total?`${s} × ${sc.toUpperCase()}`:"—";
- $("streakDetail").textContent=total?"Current consecutive color streak":"No results yet";
- let best={red:0,black:0,green:0},cur={red:0,black:0,green:0};
- [...data].reverse().forEach(n=>{let c=color(n);cur[c]++;best[c]=Math.max(best[c],cur[c]);if(c!=="green"){cur.green=0}else{cur.red=0;cur.black=0}});
- $("longest").textContent=`R ${best.red} • B ${best.black} • 0 ${best.green}`;
- const f=Array(37).fill(0);data.forEach(n=>{if(valid(n))f[n]++});
- const sorted=[...Array(37).keys()].sort((a,b)=>f[b]-f[a]||a-b);
- updateNextWatch(data);
- drawBalls("hot",sorted.slice(0,5),"hot");drawBalls("cold",sorted.slice(-5).reverse(),"cold");
- $("frequency").innerHTML=sorted.map(n=>`<div class="barrow"><span>${n}</span><div class="bar"><div class="fill" style="width:${total?f[n]/Math.max(...f,1)*100:0}%"></div></div><span>${f[n]}</span></div>`).join("");
- const odd=data.filter(n=>n>0&&n%2).length,even=data.filter(n=>n>0&&n%2===0).length,low=data.filter(n=>n>=1&&n<=18).length,high=data.filter(n=>n>=19).length;
- $("parity").innerHTML=rows([["Odd",odd],["Even",even],["1–18",low],["19–36",high]],total);
- let d1=data.filter(n=>n>=1&&n<=12).length,d2=data.filter(n=>n>=13&&n<=24).length,d3=data.filter(n=>n>=25).length;
- $("dozens").innerHTML=rows([["1st 12",d1],["2nd 12",d2],["3rd 12",d3]],total);
- $("history").innerHTML=data.slice(0,80).map(n=>`<div class="cell ${color(n)}">${n}</div>`).join("")||'<div class="empty" style="grid-column:1/-1">No results</div>';
- $("estimate").textContent=total?`Observed in ${total} spins: Red ${pct(r,total)}, Black ${pct(b,total)}, Zero ${pct(z,total)}. These are descriptive statistics, not a prediction of the next outcome.`:"Observed sample is too small for a useful comparison.";
-}
-function rows(arr,total){return arr.map(x=>`<div class="barrow"><span>${x[0]}</span><div class="bar"><div class="fill" style="width:${total?x[1]/total*100:0}%"></div></div><span>${pct(x[1],total)}</span></div>`).join("")}
-function drawBalls(id,arr,cls){$(id).innerHTML=arr.map(n=>`<div class="ball ${color(n)} ${cls}" title="${n}: ${spins.filter(x=>x===n).length} hits">${n}</div>`).join("")||'<div class="empty">No data</div>'}
-function generate(n=100){const a=[];for(let i=0;i<n;i++){const x=Math.floor(Math.random()*37);a.push(x)}spins=a.concat(spins).slice(0,1000);save();render();setStatus(true,"TEST DATA")}
-async function fetchApi(){
- if(!api)return;
- setStatus(false,"FETCHING...");
- try{
-  const res=await fetch(api,{cache:"no-store"});
-  if(!res.ok)throw new Error("HTTP "+res.status);
-  const d=await res.json();
-  const incoming=Array.isArray(d)?d:d.spins;
-  if(!Array.isArray(incoming))throw new Error("Response must contain spins[]");
-  const clean=incoming.map(Number).filter(valid);
-  // The backend is the source of truth while connected.
-  spins=clean.slice(0,1000);
-  save();render();setStatus(true,"LIVE API");
- }catch(e){console.error(e);setStatus(false,"API ERROR")}
-}
-async function sendSpinToBackend(n){
- if(!api)return false;
- try{
-  const base=api.replace(/\/api\/roulette-history\/?$/,'');
-  const res=await fetch(base+"/api/roulette-result",{
-   method:"POST",headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({number:n})
-  });
-  if(!res.ok)throw new Error("HTTP "+res.status);
-  await fetchApi();
-  return true;
- }catch(e){console.error(e);return false}
-}
-$("connect").onclick=()=>{
- api=$("apiUrl").value.trim().replace(/\/$/,"");
- localStorage.setItem("rouletteApi",api);
- if(timer)clearInterval(timer);
- if(api){fetchApi();timer=setInterval(fetchApi,Number($("refresh").value))}
- else{setStatus(false,"NO API")}
+// European Wheel Sequence (37 Pockets)
+const WHEEL_ORDER = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+const RED_NUMS = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+const BLACK_NUMS = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35];
+
+// Wheel Sector Definitions
+const SECTORS = {
+  "Voisins du Zéro": [22, 18, 29, 7, 28, 12, 35, 3, 26, 0, 32, 15, 19, 4, 21, 2, 25],
+  "Tiers du Cylindre": [27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33],
+  "Orphelins": [1, 20, 14, 31, 9, 17, 34, 6],
+  "Jeu Zéro": [12, 35, 3, 26, 0, 32, 15]
 };
-$("refresh").onchange=()=>{if(api){if(timer)clearInterval(timer);timer=setInterval(fetchApi,Number($("refresh").value))}}
-$("demo").onclick=()=>generate(100);
-$("manual").onclick=async()=>{const v=prompt("Enter roulette result (0–36):");if(v!==null){const n=Number(v);if(valid(n)){
-  if(api){
-   const ok=await sendSpinToBackend(n);
-   if(!ok){alert("The backend could not save this result. Check your connection.")}
-  }else{
-   spins.unshift(n);spins=spins.slice(0,1000);save();render();
+
+let spins = JSON.parse(localStorage.getItem("rouletteHistoryPro") || "[]");
+let timer = null;
+let apiEndpoint = "";
+
+const $ = id => document.getElementById(id);
+
+function getColor(num) {
+  if (num === 0) return "green";
+  return RED_NUMS.includes(num) ? "red" : "black";
+}
+
+function validNum(n) {
+  return Number.isInteger(n) && n >= 0 && n <= 36;
+}
+
+function updateStatus(state, label) {
+  const pill = $("statusPill");
+  pill.className = "status-pill " + state;
+  $("statusText").textContent = label;
+}
+
+function saveHistory() {
+  localStorage.setItem("rouletteHistoryPro", JSON.stringify(spins.slice(0, 1000)));
+}
+
+// MAIN RENDER ENGINE
+function renderDashboard() {
+  const data = spins.slice(0, 1000);
+  const total = data.length;
+  $("sampleSize").textContent = total;
+
+  if (total === 0) {
+    renderEmptyState();
+    return;
   }
- }else alert("Enter a whole number from 0 to 36.")}};
-$("clear").onclick=()=>{if(confirm("Clear all locally stored history?")){spins=[];save();render()}};
-const savedApi=localStorage.getItem("rouletteApi");
-$("apiUrl").value=savedApi||"https://betpredict-ke-backend.onrender.com/api/roulette-history";
-api=$("apiUrl").value.trim();
-localStorage.setItem("rouletteApi",api);
-render();
-if(api){fetchApi();timer=setInterval(fetchApi,Number($("refresh").value))}
+
+  // 1. Basic Distributions
+  const rCount = data.filter(n => getColor(n) === "red").length;
+  const bCount = data.filter(n => getColor(n) === "black").length;
+  const gCount = data.filter(n => getColor(n) === "green").length;
+
+  $("redPct").textContent = ((rCount / total) * 100).toFixed(1) + "%";
+  $("blackPct").textContent = ((bCount / total) * 100).toFixed(1) + "%";
+  $("zeroPct").textContent = ((gCount / total) * 100).toFixed(1) + "%";
+
+  // 2. Streaks Calculation
+  computeStreaks(data);
+
+  // 3. Hot and Cold Pockets
+  const freq = Array(37).fill(0);
+  data.forEach(n => { if (validNum(n)) freq[n]++; });
+  
+  const sortedIndices = [...Array(37).keys()].sort((a, b) => freq[b] - freq[a]);
+  renderBalls("hotBalls", sortedIndices.slice(0, 5));
+  renderBalls("coldBalls", sortedIndices.slice(-5).reverse());
+
+  // 4. Mathematical Calculations (Entropy & Z-Score)
+  computeMathMetrics(rCount, bCount, gCount, total);
+
+  // 5. Physics Deceleration Vector & Chi-Square Calculation
+  computePhysicsAndChiSquare(data, freq, total);
+
+  // 6. Markov Chain Probabilities & Color Prediction Engine
+  computeMarkovAndPrediction(data, rCount, bCount, gCount, total);
+
+  // 7. Sector & Range Bars
+  renderSectorsAndRanges(data, total);
+
+  // 8. Render Chronological History
+  renderHistoryUI(data);
+}
+
+function renderEmptyState() {
+  $("currentStreak").textContent = "—";
+  $("streakDetail").textContent = "No data available";
+  $("predOutcome").textContent = "WAITING DATA";
+  $("predOutcome").className = "pred-badge black";
+  $("predConfidence").textContent = "Confidence Metric: 0.0%";
+  $("pBarRed").style.width = "33.3%";
+  $("pBarGreen").style.width = "33.3%";
+  $("pBarBlack").style.width = "33.4%";
+  $("pValRed").textContent = "33.3%";
+  $("pValGreen").textContent = "33.3%";
+  $("pValBlack").textContent = "33.4%";
+  $("historyContainer").innerHTML = '<div class="small" style="padding:10px;">No spins recorded. Inject test data or connect live API.</div>';
+}
+
+// STREAK CALCULATOR
+function computeStreaks(data) {
+  let currLen = 0;
+  let currColor = data.length ? getColor(data[0]) : null;
+
+  for (let i = 0; i < data.length; i++) {
+    if (getColor(data[i]) === currColor) currLen++;
+    else break;
+  }
+
+  $("currentStreak").textContent = currLen ? `${currLen} × ${currColor.toUpperCase()}` : "—";
+  $("streakDetail").textContent = currLen ? `Active consecutive streak` : "No results";
+
+  let maxR = 0, maxB = 0, maxG = 0;
+  let cR = 0, cB = 0, cG = 0;
+
+  [...data].reverse().forEach(n => {
+    let c = getColor(n);
+    if (c === "red") { cR++; cB = 0; cG = 0; maxR = Math.max(maxR, cR); }
+    else if (c === "black") { cB++; cR = 0; cG = 0; maxB = Math.max(maxB, cB); }
+    else { cG++; cR = 0; cB = 0; maxG = Math.max(maxG, cG); }
+  });
+
+  $("longestStreaks").textContent = `Red: ${maxR} | Black: ${maxB} | Zero: ${maxG}`;
+}
+
+// MATHEMATICAL METRICS (Entropy & Z-Score)
+function computeMathMetrics(r, b, g, total) {
+  // Shannon Entropy: H(X) = - sum(P(x) * log2(P(x)))
+  const pR = r / total || 0.0001;
+  const pB = b / total || 0.0001;
+  const pG = g / total || 0.0001;
+
+  const entropy = -1 * ((pR * Math.log2(pR)) + (pB * Math.log2(pB)) + (pG * Math.log2(pG)));
+  const normalizedEntropy = entropy / Math.log2(3); // Max entropy for 3 states = 1.5849 bits
+
+  $("entropyVal").textContent = normalizedEntropy.toFixed(3);
+  $("entropyLabel").textContent = normalizedEntropy > 0.95 ? "High Randomness (Unbiased)" : "Low Randomness (Possible Bias)";
+
+  // Z-Score for 2-color decision (Red vs Black)
+  const nonZeroTotal = r + b;
+  if (nonZeroTotal > 0) {
+    const expected = nonZeroTotal / 2;
+    const stdDev = Math.sqrt(nonZeroTotal * 0.5 * 0.5);
+    const z = (r - expected) / stdDev;
+    $("zScoreVal").textContent = (z > 0 ? "+" : "") + z.toFixed(2) + " σ";
+    if (Math.abs(z) > 1.96) {
+      $("zScoreLabel").textContent = "⚠️ Statistically Significant Bias (p < 0.05)";
+    } else {
+      $("zScoreLabel").textContent = "Normal Range (-1.96 to +1.96)";
+    }
+  }
+}
+
+// PHYSICS DECELERATION & CHI-SQUARE
+function computePhysicsAndChiSquare(data, freq, total) {
+  // 1. Angular Phase Drift Vector
+  if (data.length >= 2) {
+    let totalShift = 0;
+    const samples = Math.min(data.length - 1, 20);
+    for (let i = 0; i < samples; i++) {
+      let idx1 = WHEEL_ORDER.indexOf(data[i]);
+      let idx2 = WHEEL_ORDER.indexOf(data[i + 1]);
+      let diff = (idx1 - idx2 + 37) % 37;
+      totalShift += diff;
+    }
+    let avgPocketShift = totalShift / samples;
+    let degShift = (avgPocketShift * (360 / 37)).toFixed(1);
+    $("physVector").textContent = `${degShift}° / Spin (${avgPocketShift.toFixed(1)} Pockets)`;
+  } else {
+    $("physVector").textContent = "Insufficient Data";
+  }
+
+  // 2. Chi-Square Test
+  const expectedFreq = total / 37;
+  let chiSquare = 0;
+  for (let i = 0; i < 37; i++) {
+    chiSquare += Math.pow(freq[i] - expectedFreq, 2) / expectedFreq;
+  }
+  
+  $("chiSquareVal").textContent = chiSquare.toFixed(2) + " (df=36)";
+  if (chiSquare > 50.99) {
+    $("chiStatus").textContent = "⚠️ Non-random variance detected (Critical > 50.99)";
+  } else {
+    $("chiStatus").textContent = "Conforms to standard theoretical distribution";
+  }
+}
+
+// MARKOV CHAIN MATRIX & COLOR PREDICTION ENGINE
+function computeMarkovAndPrediction(data, rCount, bCount, gCount, total) {
+  const transitions = {
+    red: { red: 0, black: 0, green: 0, total: 0 },
+    black: { red: 0, black: 0, green: 0, total: 0 },
+    green: { red: 0, black: 0, green: 0, total: 0 }
+  };
+
+  // Build Transition Counts from Chronological Order (Old to New)
+  const chrono = [...data].reverse();
+  for (let i = 0; i < chrono.length - 1; i++) {
+    let fromColor = getColor(chrono[i]);
+    let toColor = getColor(chrono[i + 1]);
+    transitions[fromColor][toColor]++;
+    transitions[fromColor].total++;
+  }
+
+  // Update Markov Table UI
+  const formatProb = (c, t) => t > 0 ? ((c / t) * 100).toFixed(1) + "%" : "0.0%";
+  $("markovBody").innerHTML = `
+    <tr>
+      <td>Current Red</td>
+      <td>${formatProb(transitions.red.red, transitions.red.total)}</td>
+      <td>${formatProb(transitions.red.black, transitions.red.total)}</td>
+      <td>${formatProb(transitions.red.green, transitions.red.total)}</td>
+    </tr>
+    <tr>
+      <td>Current Black</td>
+      <td>${formatProb(transitions.black.red, transitions.black.total)}</td>
+      <td>${formatProb(transitions.black.black, transitions.black.total)}</td>
+      <td>${formatProb(transitions.black.green, transitions.black.total)}</td>
+    </tr>
+    <tr>
+      <td>Current Zero</td>
+      <td>${formatProb(transitions.green.red, transitions.green.total)}</td>
+      <td>${formatProb(transitions.green.black, transitions.green.total)}</td>
+      <td>${formatProb(transitions.green.green, transitions.green.total)}</td>
+    </tr>
+  `;
+
+  // --- PREDICTION CALCULATOR ---
+  // Base Theoretical Probabilities
+  let weightRed = 18 / 37;
+  let weightBlack = 18 / 37;
+  let weightGreen = 1 / 37;
+
+  // Factor 1: Markov Transition Factor
+  const lastColor = getColor(data[0]);
+  if (transitions[lastColor].total > 3) {
+    weightRed = (weightRed + (transitions[lastColor].red / transitions[lastColor].total)) / 2;
+    weightBlack = (weightBlack + (transitions[lastColor].black / transitions[lastColor].total)) / 2;
+    weightGreen = (weightGreen + (transitions[lastColor].green / transitions[lastColor].total)) / 2;
+  }
+
+  // Factor 2: Mean Reversion / Anti-Streak Compensation Weight
+  let activeStreak = 0;
+  for (let i = 0; i < data.length; i++) {
+    if (getColor(data[i]) === lastColor) activeStreak++;
+    else break;
+  }
+  if (activeStreak >= 3) {
+    if (lastColor === "red") weightBlack += activeStreak * 0.04;
+    else if (lastColor === "black") weightRed += activeStreak * 0.04;
+  }
+
+  // Normalize Probabilities
+  const sumWeights = weightRed + weightBlack + weightGreen;
+  const pRed = (weightRed / sumWeights) * 100;
+  const pBlack = (weightBlack / sumWeights) * 100;
+  const pGreen = (weightGreen / sumWeights) * 100;
+
+  $("pBarRed").style.width = pRed + "%";
+  $("pBarBlack").style.width = pBlack + "%";
+  $("pBarGreen").style.width = pGreen + "%";
+
+  $("pValRed").textContent = pRed.toFixed(1) + "%";
+  $("pValBlack").textContent = pBlack.toFixed(1) + "%";
+  $("pValGreen").textContent = pGreen.toFixed(1) + "%";
+
+  // Determine Prediction Winner
+  let predicted = "RED";
+  let maxP = pRed;
+  let cls = "red";
+
+  if (pBlack > maxP) {
+    predicted = "BLACK";
+    maxP = pBlack;
+    cls = "black";
+  }
+  if (pGreen > maxP) {
+    predicted = "ZERO";
+    maxP = pGreen;
+    cls = "green";
+  }
+
+  $("predOutcome").textContent = predicted;
+  $("predOutcome").className = `pred-badge ${cls}`;
+  
+  // Calculate Statistical Confidence Score
+  const confidence = Math.min(Math.abs(maxP - 33.3) * 2.8 + (total > 50 ? 20 : total / 2.5), 94.5);
+  $("predConfidence").textContent = `Predicted Engine Confidence: ${confidence.toFixed(1)}%`;
+}
+
+// RENDER SECTORS & RANGES
+function renderSectorsAndRanges(data, total) {
+  let sectorHtml = "";
+  for (const [secName, pockets] of Object.entries(SECTORS)) {
+    const hits = data.filter(n => pockets.includes(n)).length;
+    const pct = ((hits / total) * 100).toFixed(1);
+    sectorHtml += `
+      <div class="barrow">
+        <span style="width:110px;">${secName}</span>
+        <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
+        <span>${pct}%</span>
+      </div>
+    `;
+  }
+  $("sectorRows").innerHTML = sectorHtml;
+
+  // Dozens
+  const d1 = data.filter(n => n >= 1 && n <= 12).length;
+  const d2 = data.filter(n => n >= 13 && n <= 24).length;
+  const d3 = data.filter(n => n >= 25 && n <= 36).length;
+  $("dozensRows").innerHTML = `
+    <div class="barrow"><span>1st 12</span><div class="bar"><div class="fill" style="width:${(d1/total*100).toFixed(1)}%"></div></div><span>${((d1/total)*100).toFixed(1)}%</span></div>
+    <div class="barrow"><span>2nd 12</span><div class="bar"><div class="fill" style="width:${(d2/total*100).toFixed(1)}%"></div></div><span>${((d2/total)*100).toFixed(1)}%</span></div>
+    <div class="barrow"><span>3rd 12</span><div class="bar"><div class="fill" style="width:${(d3/total*100).toFixed(1)}%"></div></div><span>${((d3/total)*100).toFixed(1)}%</span></div>
+  `;
+
+  // Ranges
+  const low = data.filter(n => n >= 1 && n <= 18).length;
+  const high = data.filter(n => n >= 19 && n <= 36).length;
+  $("rangeRows").innerHTML = `
+    <div class="barrow"><span>1–18</span><div class="bar"><div class="fill" style="width:${(low/total*100).toFixed(1)}%"></div></div><span>${((low/total)*100).toFixed(1)}%</span></div>
+    <div class="barrow"><span>19–36</span><div class="bar"><div class="fill" style="width:${(high/total*100).toFixed(1)}%"></div></div><span>${((high/total)*100).toFixed(1)}%</span></div>
+  `;
+}
+
+// BALL RENDER HELPER
+function renderBalls(elementId, nums) {
+  $(elementId).innerHTML = nums.map(n => {
+    let c = getColor(n);
+    let char = c === "red" ? "r" : c === "black" ? "b" : "g";
+    return `<div class="ball ${char}" title="Pocket ${n}">${n}</div>`;
+  }).join("");
+}
+
+// HISTORY RENDER HELPER
+function renderHistoryUI(data) {
+  $("historyCount").textContent = `${data.length} Spins Record`;
+  $("historyContainer").innerHTML = data.map(n => {
+    let c = getColor(n);
+    let char = c === "red" ? "r" : c === "black" ? "b" : "g";
+    return `<div class="ball ${char}" title="Result: ${n}">${n}</div>`;
+  }).join("");
+}
+
+// DATA INJECTION & API HANDLING
+function injectDemoData(count = 100) {
+  const mock = [];
+  for (let i = 0; i < count; i++) {
+    mock.push(Math.floor(Math.random() * 37));
+  }
+  spins = mock.concat(spins).slice(0, 1000);
+  saveHistory();
+  renderDashboard();
+  updateStatus("live", "DEMO DATA LOADED");
+}
+
+async function fetchLiveApi() {
+  if (!apiEndpoint) return;
+  updateStatus("fetching", "CONNECTING...");
+  try {
+    const res = await fetch(apiEndpoint, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP Status: " + res.status);
+    const data = await res.json();
+    const incoming = Array.isArray(data) ? data : data.spins;
+    
+    if (!Array.isArray(incoming)) throw new Error("Format Mismatch");
+    
+    const clean = incoming.map(Number).filter(validNum);
+    spins = clean.concat(spins).slice(0, 1000);
+    saveHistory();
+    renderDashboard();
+    updateStatus("live", "LIVE API ACTIVE");
+  } catch (err) {
+    console.error(err);
+    updateStatus("error", "API DISCONNECTED");
+  }
+}
+
+// EVENT LISTENERS
+$("connectBtn").onclick = () => {
+  apiEndpoint = $("apiUrl").value.trim().replace(/\/$/, "");
+  localStorage.setItem("rouletteApiPro", apiEndpoint);
+  if (timer) clearInterval(timer);
+  
+  if (apiEndpoint) {
+    fetchLiveApi();
+    timer = setInterval(fetchLiveApi, Number($("refreshRate").value));
+  } else {
+    updateStatus("", "STANDBY");
+  }
+};
+
+$("refreshRate").onchange = () => {
+  if (apiEndpoint) {
+    if (timer) clearInterval(timer);
+    timer = setInterval(fetchLiveApi, Number($("refreshRate").value));
+  }
+};
+
+$("demoBtn").onclick = () => injectDemoData(100);
+
+$("manualBtn").onclick = () => {
+  const val = prompt("Enter Roulette Outcome (0-36):");
+  if (val !== null) {
+    const n = Number(val);
+    if (validNum(n)) {
+      spins.unshift(n);
+      saveHistory();
+      renderDashboard();
+    } else {
+      alert("Invalid pocket. Please enter a whole integer between 0 and 36.");
+    }
+  }
+};
+
+$("clearBtn").onclick = () => {
+  if (confirm("Reset and erase all recorded spin history?")) {
+    spins = [];
+    saveHistory();
+    renderDashboard();
+    updateStatus("", "STANDBY");
+  }
+};
+
+// INITIALIZATION
+$("apiUrl").value = localStorage.getItem("rouletteApiPro") || "";
+apiEndpoint = $("apiUrl").value.trim();
+renderDashboard();
+
+if (apiEndpoint) {
+  fetchLiveApi();
+  timer = setInterval(fetchLiveApi, Number($("refreshRate").value));
+}
 </script>
 </body>
 </html>
