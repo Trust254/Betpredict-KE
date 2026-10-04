@@ -3,989 +3,397 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#070c14">
-<title>Pro Gaming Signal Suite — Roulette & Aviator Predictive Engines</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Pro Gaming Statistical Tracker & Live Session Analyzer</title>
 <style>
 :root {
-  --bg-dark: #050811;
-  --panel-bg: rgba(13, 20, 36, 0.75);
-  --panel-border: rgba(255, 255, 255, 0.08);
-  --neon-blue: #00f0ff;
-  --neon-purple: #8a2be2;
-  --neon-gold: #ffb700;
-  --neon-green: #00ff88;
-  --neon-pink: #ff0055;
+  --bg: #070d19;
+  --panel: #0e1726;
+  --panel-border: #1b2a40;
+  --text: #f0f4f8;
+  --muted: #8295a8;
+  --cyan: #00f0ff;
+  --purple: #9d4edd;
+  --red: #ff3366;
+  --green: #00e676;
+  --gold: #ffd700;
+  --shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: var(--bg-dark);
-  background-image: 
-    radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 85% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 45%),
-    radial-gradient(circle at 50% 80%, rgba(0, 255, 136, 0.05) 0%, transparent 50%);
-  background-attachment: fixed;
-  color: #f0f4f8;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  padding: 16px;
+  line-height: 1.4;
 }
 
-/* Glassmorphism panel styling */
-.glass-panel {
-  background: var(--panel-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--panel-border);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* Unique & Distinct Button Redesigns */
-.btn-primary-neon {
-  background: linear-gradient(135deg, #00f0ff 0%, #0072ff 100%);
-  color: #000;
-  font-weight: 800;
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  border: none;
-}
-.btn-primary-neon:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 30px rgba(0, 240, 255, 0.7);
-  filter: brightness(1.1);
-}
-
-.btn-gold-glow {
-  background: linear-gradient(135deg, #ffb700 0%, #ff8800 100%);
-  color: #050811;
-  font-weight: 900;
-  box-shadow: 0 0 20px rgba(255, 183, 0, 0.35);
-  transition: all 0.25s ease;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-.btn-gold-glow:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 0 35px rgba(255, 183, 0, 0.65);
-}
-
-.btn-purple-gradient {
-  background: linear-gradient(135deg, #8a2be2 0%, #4a00e0 100%);
-  color: #fff;
-  font-weight: 700;
-  box-shadow: 0 0 18px rgba(138, 43, 226, 0.4);
-  transition: all 0.25s ease;
-}
-.btn-purple-gradient:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 28px rgba(138, 43, 226, 0.7);
-}
-
-.btn-danger-glow {
-  background: linear-gradient(135deg, #ff0055 0%, #990033 100%);
-  color: #fff;
-  font-weight: 700;
-  box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
-  transition: all 0.2s ease;
-}
-.btn-danger-glow:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 25px rgba(255, 0, 85, 0.6);
-}
-
-.btn-dark-pill {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #cbd5e1;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-.btn-dark-pill:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
-/* Tab Navigation Styling */
-.game-tab {
-  position: relative;
-  transition: all 0.3s ease;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-.game-tab.active-tab {
-  background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
-  border-color: var(--neon-blue);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 10px 25px -5px rgba(0, 240, 255, 0.25);
-}
-.game-tab.active-tab::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 15%;
-  right: 15%;
-  height: 3px;
-  background: var(--neon-blue);
-  border-radius: 3px;
-  box-shadow: 0 0 12px var(--neon-blue);
-}
-
-/* Aviator Multiplier Pill Styling */
-.multiplier-pill {
-  display: inline-flex;
+/* Header & Tabs */
+header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  padding: 6px 14px;
-  border-radius: 12px;
-  font-weight: 800;
-  font-size: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  padding: 16px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  margin-bottom: 16px;
 }
-.mult-low { background: rgba(0, 240, 255, 0.15); border: 1px solid #00f0ff; color: #00f0ff; }
-.mult-mid { background: rgba(138, 43, 226, 0.2); border: 1px solid #c084fc; color: #e9d5ff; }
-.mult-high { background: rgba(255, 0, 85, 0.2); border: 1px solid #ff0055; color: #ff0055; }
-.mult-jackpot { background: linear-gradient(135deg, #ffb700, #ff0055); border: 1px solid #ffd700; color: #fff; }
 
-/* Custom Scrollbars */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #050811; }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+.brand { font-size: 20px; font-weight: 800; color: var(--cyan); }
+
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  color: var(--muted);
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  background: linear-gradient(135deg, rgba(0,240,255,0.1), rgba(157,78,221,0.1));
+  border-color: var(--cyan);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(0,240,255,0.2);
+}
+
+/* Main Cards */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.card-title {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Manual Input Section */
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+input, select {
+  flex: 1;
+  padding: 14px;
+  background: #050a14;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+}
+
+input:focus { border-color: var(--cyan); }
+
+.btn {
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.btn:active { transform: scale(0.98); }
+.btn-cyan { background: var(--cyan); color: #000; }
+.btn-purple { background: var(--purple); color: #fff; }
+.btn-danger { background: var(--red); color: #fff; }
+
+/* Grid Displays */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.stat-box {
+  background: #050a14;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--panel-border);
+}
+
+.stat-val {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--cyan);
+  margin-top: 4px;
+}
+
+/* History List */
+.history-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.tag {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.tag.high { background: rgba(0,230,118,0.2); color: var(--green); border-color: var(--green); }
+.tag.low { background: rgba(255,51,102,0.2); color: var(--red); border-color: var(--red); }
+.tag.zero { background: rgba(255,215,0,0.2); color: var(--gold); border-color: var(--gold); }
+
+/* Notice Box */
+.notice-box {
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(0,240,255,0.05);
+  border: 1px solid rgba(0,240,255,0.2);
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* Paywall Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.modal-card {
+  background: var(--panel);
+  border: 1px solid var(--cyan);
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
 </style>
 </head>
-<body class="min-h-screen pb-12 text-slate-100">
+<body>
 
-<!-- AUTHENTICATION MODAL -->
-<div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xl">
-  <div class="glass-panel w-full max-w-md rounded-3xl p-8 relative overflow-hidden border border-cyan-500/30">
-    <div class="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="text-center mb-6">
-      <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center text-3xl shadow-lg shadow-cyan-500/30 border border-white/20">
-        🚀
-      </div>
-      <h2 id="authTitle" class="text-2xl font-black tracking-tight text-white">Pro Predictive Engine</h2>
-      <p id="authSub" class="text-xs text-slate-400 mt-1">Register or Login to start 5 trial predictions</p>
-    </div>
-
-    <!-- Registration Form -->
-    <form id="registerForm" class="space-y-4">
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Full Name</label>
-        <input type="text" id="regName" placeholder="e.g. Alex Mercer" required class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all">
-      </div>
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Phone Number / Account</label>
-        <input type="text" id="regAccount" placeholder="e.g. 0712345678" required class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all">
-      </div>
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Password</label>
-        <input type="password" id="regPass" placeholder="••••••••" required class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all">
-      </div>
-      <button type="submit" class="btn-gold-glow w-full py-3.5 rounded-xl text-sm uppercase tracking-wider mt-2">
-        Create Free Account (5 Free Signals)
-      </button>
-      <p class="text-xs text-center text-slate-400 pt-2">
-        Already registered? <a href="#" id="showLoginLink" class="text-cyan-400 font-bold hover:underline">Login Here</a>
-      </p>
-    </form>
-
-    <!-- Login Form -->
-    <form id="loginForm" class="space-y-4 hidden">
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Account Phone / Email</label>
-        <input type="text" id="loginAccount" placeholder="Registered account" required class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all">
-      </div>
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Password</label>
-        <input type="password" id="loginPass" placeholder="••••••••" required class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all">
-      </div>
-      <button type="submit" class="btn-primary-neon w-full py-3.5 rounded-xl text-sm uppercase tracking-wider mt-2">
-        Login to Dashboard
-      </button>
-      <p class="text-xs text-center text-slate-400 pt-2">
-        Need an account? <a href="#" id="showRegLink" class="text-cyan-400 font-bold hover:underline">Register Here</a>
-      </p>
-    </form>
-  </div>
-</div>
-
-<!-- RECHARGE / SUBSCRIPTION PAYWALL MODAL -->
-<div id="rechargeModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-xl hidden">
-  <div class="glass-panel w-full max-w-lg rounded-3xl p-8 relative border border-amber-500/30">
-    <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-3">
-        <span class="text-2xl">💳</span>
-        <h3 class="text-xl font-black text-amber-400">Recharge & Subscription Terminal</h3>
-      </div>
-      <button id="closePaywallBtn" class="btn-dark-pill px-3 py-1.5 rounded-lg text-xs">✕ Close</button>
-    </div>
-
-    <div id="rechargeNotice" class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200 leading-relaxed mb-6">
-      Your 5 trial prediction signals have ended. Choose a plan below to auto-unlock instant analytics and predictive signals.
-    </div>
-
-    <div class="grid grid-cols-2 gap-4 mb-6">
-      <!-- Tier 1 Plan -->
-      <div id="tier1Box" onclick="selectTier(1)" class="p-5 rounded-2xl border-2 border-amber-400 bg-amber-500/10 cursor-pointer transition-all hover:scale-102">
-        <span class="text-[10px] uppercase tracking-widest font-black text-amber-400 block mb-1">Initial Access</span>
-        <div class="text-2xl font-black text-white mb-1">499 KSh</div>
-        <span class="text-xs text-slate-300 font-semibold block">⏱ 2 Days (48 Hours)</span>
-      </div>
-      <!-- Tier 2 Plan -->
-      <div id="tier2Box" onclick="selectTier(2)" class="p-5 rounded-2xl border border-slate-700 bg-slate-900/60 opacity-60 cursor-pointer transition-all hover:scale-102">
-        <span class="text-[10px] uppercase tracking-widest font-black text-purple-400 block mb-1">Renewal Plan</span>
-        <div class="text-2xl font-black text-white mb-1">816 KSh</div>
-        <span class="text-xs text-slate-300 font-semibold block">📅 1 Month (30 Days)</span>
-      </div>
-    </div>
-
-    <form id="paymentForm" class="space-y-4">
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Active Plan Selection</label>
-        <input type="text" id="selectedPlanText" value="1st Recharge: 499 KSh for 2 Days (48 Hours)" readonly class="w-full bg-slate-950 border border-amber-500/40 text-amber-300 font-bold rounded-xl px-4 py-3 text-sm">
-      </div>
-      <div>
-        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">M-Pesa Mobile Number</label>
-        <input type="text" id="payPhone" placeholder="07XXXXXXXX" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-400">
-      </div>
-      <button type="submit" id="paySubmitBtn" class="btn-gold-glow w-full py-4 rounded-xl text-base tracking-wide flex items-center justify-center gap-2">
-        <span>⚡ Unlock Signals Instantly</span>
-      </button>
-    </form>
-
-    <div id="paymentStatus" class="text-xs text-center font-bold text-emerald-400 mt-4 h-4"></div>
-  </div>
-</div>
-
-<!-- MAIN DASHBOARD WRAPPER -->
-<div class="max-w-7xl mx-auto px-4 sm:px-6 pt-6">
-
-  <!-- HEADER & NAVIGATION -->
-  <header class="glass-panel rounded-3xl p-5 mb-6 flex flex-col md:flex-row items-center justify-between gap-4 border border-white/10">
-    <div class="flex items-center gap-4">
-      <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 flex items-center justify-center text-3xl shadow-xl shadow-purple-500/20 border border-white/20">
-        ⚡
-      </div>
-      <div>
-        <h1 class="text-2xl font-black tracking-tight text-white flex items-center gap-2">
-          PRO SIGNAL SUITE <span class="text-xs px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">v5.0 LIVE</span>
-        </h1>
-        <p class="text-xs text-slate-400 font-medium mt-0.5">Unified Real-time Predictive Engines for Odibet, Betika & European Roulette</p>
-      </div>
-    </div>
-
-    <!-- Status Pills & Account Info -->
-    <div class="flex items-center gap-3 flex-wrap justify-end">
-      <div id="subStatusBadge" class="px-4 py-2 rounded-xl bg-slate-900/90 border border-slate-700 text-xs font-extrabold flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
-        <span id="subStatusText">Free Trial (0/5)</span>
-      </div>
-      <div id="statusPill" class="px-4 py-2 rounded-xl bg-slate-900/90 border border-slate-700 text-xs font-extrabold flex items-center gap-2">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-        <span id="statusText">STANDBY</span>
-      </div>
-      <button id="accountBtn" class="btn-dark-pill px-4 py-2 rounded-xl text-xs flex items-center gap-2">
-        👤 <span id="accountBtnLabel">Account</span>
-      </button>
-    </div>
+<div class="app-container">
+  <header>
+    <div class="brand">PRO METRICS STUDIO</div>
+    <div id="userInfo" style="font-size: 12px; color: var(--muted);">Trial Active (Round <span id="trialCount">0</span>/5)</div>
   </header>
 
-  <!-- GAME PLATFORM SELECTOR TABS -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
-    <button id="tabRoulette" onclick="switchGame('roulette')" class="game-tab active-tab p-4 rounded-2xl flex items-center gap-3 text-left">
-      <div class="w-10 h-10 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-xl">🎰</div>
-      <div>
-        <div class="text-sm font-black text-white">Roulette Pro</div>
-        <div class="text-[11px] text-slate-400">European Physics & Markov Wheel</div>
-      </div>
-    </button>
-
-    <button id="tabOdibet" onclick="switchGame('odibet')" class="game-tab p-4 rounded-2xl flex items-center gap-3 text-left">
-      <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-xl">🚀</div>
-      <div>
-        <div class="text-sm font-black text-white">Odibet Aviator Engine</div>
-        <div class="text-[11px] text-slate-400">Low/High Multiplier Crash Signals</div>
-      </div>
-    </button>
-
-    <button id="tabBetika" onclick="switchGame('betika')" class="game-tab p-4 rounded-2xl flex items-center gap-3 text-left">
-      <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xl">🛩️</div>
-      <div>
-        <div class="text-sm font-black text-white">Betika Aviator Engine</div>
-        <div class="text-[11px] text-slate-400">Pattern Flight Physics Predictor</div>
-      </div>
-    </button>
+  <!-- Game Selector -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchGame('odibet')">Odibet Aviator</button>
+    <button class="tab-btn" onclick="switchGame('betika')">Betika Aviator</button>
+    <button class="tab-btn" onclick="switchGame('roulette')">Roulette Pro</button>
   </div>
 
-  <!-- CONTROL TERMINAL BAR -->
-  <div class="glass-panel rounded-2xl p-5 mb-6">
-    <div class="text-xs uppercase font-extrabold tracking-widest text-slate-400 mb-3 flex items-center justify-between">
-      <span>📡 Real-time Endpoint & Live Controls</span>
-      <span id="currentGameLabel" class="text-cyan-400">ACTIVE ENGINE: ROULETTE ANALYZER</span>
+  <!-- Manual Entry Section -->
+  <div class="card">
+    <div class="card-title">
+      <span id="gameTitle">Odibet Live Entry Logging</span>
+      <span style="font-size:11px; color:var(--cyan);">Manual Sync Mode</span>
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
-      <div class="lg:col-span-6 flex gap-2">
-        <input type="text" id="apiUrl" placeholder="https://api.your-platform.com/live-spins" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
-        <button id="connectBtn" class="btn-primary-neon px-5 py-2.5 rounded-xl text-xs">Connect</button>
-      </div>
-      <div class="lg:col-span-6 flex items-center gap-2 flex-wrap justify-end">
-        <button id="demoBtn" class="btn-purple-gradient px-4 py-2.5 rounded-xl text-xs">⚡ Generate Live Signals</button>
-        <button id="manualBtn" class="btn-dark-pill px-4 py-2.5 rounded-xl text-xs">➕ Add Entry</button>
-        <button id="clearBtn" class="btn-danger-glow px-4 py-2.5 rounded-xl text-xs">🗑 Clear History</button>
-      </div>
+
+    <div class="input-group">
+      <input type="number" step="0.01" id="liveInput" placeholder="Enter finished multiplier (e.g. 1.35)" />
+      <button class="btn btn-cyan" onclick="addManualEntry()">+ Record Round</button>
+    </div>
+
+    <div class="notice-box">
+      <strong>How to use:</strong> Watch your live game screen on Odibet/Betika. As soon as a round finishes, type the final result above and click <strong>Record Round</strong> to calculate mathematical stats on your actual session.
     </div>
   </div>
 
-  <!-- VIEW 1: ROULETTE DASHBOARD -->
-  <div id="viewRoulette" class="space-y-6">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      
-      <!-- SIGNAL BOX (ROULETTE) -->
-      <div class="lg:col-span-8 glass-panel rounded-3xl p-6 relative overflow-hidden">
-        <!-- PAYWALL OVERLAY FOR ROULETTE -->
-        <div id="lockOverlayRoulette" class="absolute inset-0 z-20 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center rounded-3xl hidden">
-          <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-3xl mb-3">🔒</div>
-          <h3 class="text-xl font-black text-amber-400 mb-1">Predictions Locked</h3>
-          <p id="lockTextRoulette" class="text-xs text-slate-300 max-w-md mb-4">Your 5 free trial rounds have expired. Recharge 499 KSh for 2 days unlimited prediction signals.</p>
-          <button onclick="openRechargeModal()" class="btn-gold-glow px-6 py-3 rounded-xl text-xs">⚡ Unlock Now (499 KSh)</button>
-        </div>
-
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-xs font-black uppercase tracking-wider text-slate-400">Predictive Probability Output</span>
-          <span class="text-xs text-purple-400 font-bold">Physics Model 4.2</span>
-        </div>
-
-        <div class="text-center p-6 bg-slate-900/80 rounded-2xl border border-slate-800 mb-6">
-          <span class="text-[11px] font-extrabold uppercase tracking-widest text-slate-400 block mb-2">Next Predicted Color</span>
-          <div id="predColorBadge" class="inline-block px-8 py-3 rounded-2xl text-3xl font-black uppercase tracking-wider bg-slate-800 text-slate-300 border border-slate-700 shadow-2xl my-2">
-            CALCULATING
-          </div>
-          <div id="predConfidenceRoulette" class="text-xs font-bold text-cyan-400 mt-2">Confidence Level: 0.0%</div>
-
-          <div class="flex h-3 rounded-full overflow-hidden my-4 bg-slate-950 p-0.5 border border-slate-800">
-            <div id="pBarRed" class="bg-red-500 h-full transition-all duration-300" style="width: 33.3%;"></div>
-            <div id="pBarGreen" class="bg-emerald-400 h-full transition-all duration-300" style="width: 33.3%;"></div>
-            <div id="pBarBlack" class="bg-slate-600 h-full transition-all duration-300" style="width: 33.4%;"></div>
-          </div>
-
-          <div class="flex justify-between text-xs font-extrabold">
-            <span class="text-red-400">RED: <span id="pValRed">0%</span></span>
-            <span class="text-emerald-400">ZERO: <span id="pValGreen">0%</span></span>
-            <span class="text-slate-300">BLACK: <span id="pValBlack">0%</span></span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-1">Angular Drift Shift</span>
-            <div id="physVector" class="text-lg font-black text-cyan-400">0.00° / Spin</div>
-            <span class="text-[11px] text-slate-400">Pocket deceleration angle</span>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-1">Chi-Square Variance</span>
-            <div id="chiSquareVal" class="text-lg font-black text-amber-400">0.00 (p=1.00)</div>
-            <span id="chiStatus" class="text-[11px] text-slate-400">Theoretical distribution conformity</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- SIDE METRICS -->
-      <div class="lg:col-span-4 space-y-4">
-        <div class="glass-panel rounded-3xl p-5">
-          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3">Color Breakdown</h3>
-          <div class="space-y-3">
-            <div class="flex justify-between items-center text-sm">
-              <span class="text-red-400 font-bold">Red Percentage</span>
-              <span id="redPct" class="font-black text-white">0.0%</span>
-            </div>
-            <div class="flex justify-between items-center text-sm">
-              <span class="text-slate-300 font-bold">Black Percentage</span>
-              <span id="blackPct" class="font-black text-white">0.0%</span>
-            </div>
-            <div class="flex justify-between items-center text-sm">
-              <span class="text-emerald-400 font-bold">Zero Percentage</span>
-              <span id="zeroPct" class="font-black text-white">0.0%</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-slate-800 text-xs text-slate-400">
-            Total Analyzed Spins: <strong id="sampleSize" class="text-white">0</strong>
-          </div>
-        </div>
-
-        <div class="glass-panel rounded-3xl p-5">
-          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3">Hot & Cold Pockets</h3>
-          <div class="text-xs font-bold text-slate-400 mb-1">🔥 Hot Numbers:</div>
-          <div id="hotBalls" class="flex gap-1.5 flex-wrap mb-3">—</div>
-          <div class="text-xs font-bold text-slate-400 mb-1">🧊 Cold Numbers:</div>
-          <div id="coldBalls" class="flex gap-1.5 flex-wrap">—</div>
-        </div>
-      </div>
-
+  <!-- Live Statistics Display -->
+  <div class="stats-grid" style="margin-bottom: 16px;">
+    <div class="stat-box">
+      <div class="card-title">Session Rounds</div>
+      <div class="stat-val" id="totalRounds">0</div>
+    </div>
+    <div class="stat-box">
+      <div class="card-title">Session Average</div>
+      <div class="stat-val" id="avgMultiplier">0.00x</div>
+    </div>
+    <div class="stat-box">
+      <div class="card-title">High Rate (&gt; 2.0x)</div>
+      <div class="stat-val" id="highRate">0.0%</div>
     </div>
   </div>
 
-  <!-- VIEW 2: ODIBET AVIATOR ENGINE -->
-  <div id="viewOdibet" class="space-y-6 hidden">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      
-      <!-- SIGNAL BOX (ODIBET AVIATOR) -->
-      <div class="lg:col-span-8 glass-panel rounded-3xl p-6 relative overflow-hidden">
-        <!-- PAYWALL OVERLAY FOR ODIBET -->
-        <div id="lockOverlayOdibet" class="absolute inset-0 z-20 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center rounded-3xl hidden">
-          <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-3xl mb-3">🔒</div>
-          <h3 class="text-xl font-black text-amber-400 mb-1">Odibet Signals Locked</h3>
-          <p id="lockTextOdibet" class="text-xs text-slate-300 max-w-md mb-4">Your 5 free trial rounds have expired. Recharge 499 KSh for 2 days unlimited signals.</p>
-          <button onclick="openRechargeModal()" class="btn-gold-glow px-6 py-3 rounded-xl text-xs">⚡ Unlock Signals (499 KSh)</button>
-        </div>
-
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> ODIBET AVIATOR ENGINE ACTIVE
-          </span>
-          <span class="text-xs text-slate-400 font-bold">Algorithm: Crash Velocity v3.1</span>
-        </div>
-
-        <div class="text-center p-8 bg-slate-900/90 rounded-2xl border border-emerald-500/30 mb-6 relative">
-          <span class="text-xs font-extrabold uppercase tracking-widest text-slate-400 block mb-2">TARGET CASH OUT MULTIPLIER</span>
-          
-          <div class="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-amber-300 tracking-tight my-3" id="odibetMultiplier">
-            1.00x
-          </div>
-
-          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-extrabold mb-4">
-            <span>RECOMMENDED ENTRY:</span> <span id="odibetRiskLevel">SAFE (94% PROBABILITY)</span>
-          </div>
-
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-left mt-2">
-            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
-              <div class="text-[10px] text-slate-400 font-bold">SAFE AUTO CASHOUT</div>
-              <div class="text-base font-black text-emerald-400" id="odibetSafe">1.35x</div>
-            </div>
-            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
-              <div class="text-[10px] text-slate-400 font-bold">MEDIUM RISK</div>
-              <div class="text-base font-black text-purple-400" id="odibetMid">2.10x</div>
-            </div>
-            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 col-span-2 md:col-span-1">
-              <div class="text-[10px] text-slate-400 font-bold">HIGH RISK TARGET</div>
-              <div class="text-base font-black text-amber-400" id="odibetHigh">5.50x</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Aviator Trend Bar -->
-        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-          <span class="text-xs font-extrabold uppercase text-slate-400 block mb-2">Multiplier Flight Distribution (Odibet)</span>
-          <div class="flex h-3 rounded-full overflow-hidden bg-slate-950 border border-slate-800">
-            <div id="odiLowBar" class="bg-cyan-400 h-full" style="width: 50%;"></div>
-            <div id="odiMidBar" class="bg-purple-500 h-full" style="width: 35%;"></div>
-            <div id="odiHighBar" class="bg-amber-400 h-full" style="width: 15%;"></div>
-          </div>
-          <div class="flex justify-between text-[11px] font-extrabold mt-2 text-slate-400">
-            <span>&lt;2.00x: <strong id="odiLowPct" class="text-cyan-400">0%</strong></span>
-            <span>2.00x - 10.00x: <strong id="odiMidPct" class="text-purple-400">0%</strong></span>
-            <span>&gt;10.00x: <strong id="odiHighPct" class="text-amber-400">0%</strong></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- SIDE METRICS ODIBET -->
-      <div class="lg:col-span-4 space-y-4">
-        <div class="glass-panel rounded-3xl p-5">
-          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3">Live Multipliers Log</h3>
-          <div id="odibetHistoryContainer" class="flex gap-2 flex-wrap max-h-64 overflow-y-auto">
-            <span class="text-xs text-slate-500">No multipliers recorded yet.</span>
-          </div>
-        </div>
-      </div>
-
+  <!-- Session History -->
+  <div class="card">
+    <div class="card-title">
+      <span>Logged Session History</span>
+      <button class="btn btn-danger" style="padding: 4px 8px; font-size:10px;" onclick="clearSession()">Clear Data</button>
+    </div>
+    <div class="history-tags" id="historyTags">
+      <span style="font-size:12px; color:var(--muted);">No rounds recorded yet. Type a result above to begin tracking.</span>
     </div>
   </div>
+</div>
 
-  <!-- VIEW 3: BETIKA AVIATOR ENGINE -->
-  <div id="viewBetika" class="space-y-6 hidden">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      
-      <!-- SIGNAL BOX (BETIKA AVIATOR) -->
-      <div class="lg:col-span-8 glass-panel rounded-3xl p-6 relative overflow-hidden">
-        <!-- PAYWALL OVERLAY FOR BETIKA -->
-        <div id="lockOverlayBetika" class="absolute inset-0 z-20 bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center rounded-3xl hidden">
-          <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-3xl mb-3">🔒</div>
-          <h3 class="text-xl font-black text-amber-400 mb-1">Betika Signals Locked</h3>
-          <p id="lockTextBetika" class="text-xs text-slate-300 max-w-md mb-4">Your 5 free trial rounds have expired. Recharge 499 KSh for 2 days unlimited signals.</p>
-          <button onclick="openRechargeModal()" class="btn-gold-glow px-6 py-3 rounded-xl text-xs">⚡ Unlock Signals (499 KSh)</button>
-        </div>
+<!-- Paywall Lock Modal -->
+<div class="modal-overlay" id="paywallModal">
+  <div class="modal-card">
+    <h2 style="color:var(--cyan); margin-bottom: 8px;">Free Trial Limit Reached</h2>
+    <p style="font-size:13px; color:var(--muted); margin-bottom: 20px;">
+      You have completed your 5 initial manual test rounds. Unlock unlimited live statistical logging for your session.
+    </p>
 
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> BETIKA AVIATOR SIGNAL MATRIX
-          </span>
-          <span class="text-xs text-slate-400 font-bold">Algorithm: Pattern Flight v4.0</span>
-        </div>
-
-        <div class="text-center p-8 bg-slate-900/90 rounded-2xl border border-amber-500/30 mb-6">
-          <span class="text-xs font-extrabold uppercase tracking-widest text-slate-400 block mb-2">OPTIMAL FLIGHT CASHOUT TARGET</span>
-          
-          <div class="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-pink-500 to-purple-400 tracking-tight my-3" id="betikaMultiplier">
-            1.00x
-          </div>
-
-          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-extrabold mb-4">
-            <span>FLIGHT PATTERN:</span> <span id="betikaPattern">STABLE ASCENT MODEL</span>
-          </div>
-
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-left mt-2">
-            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
-              <div class="text-[10px] text-slate-400 font-bold">SAFE CASHOUT</div>
-              <div class="text-base font-black text-cyan-400" id="betikaSafe">1.28x</div>
-            </div>
-            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
-              <div class="text-[10px] text-slate-400 font-bold">RECOMMENDED</div>
-              <div class="text-base font-black text-amber-400" id="betikaMid">2.45x</div>
-            </div>
-            <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 col-span-2 md:col-span-1">
-              <div class="text-[10px] text-slate-400 font-bold">JACKPOT MULTIPLIER</div>
-              <div class="text-base font-black text-pink-500" id="betikaHigh">12.80x</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800">
-          <span class="text-xs font-extrabold uppercase text-slate-400 block mb-2">Betika Flight Pattern Probability</span>
-          <div class="flex h-3 rounded-full overflow-hidden bg-slate-950 border border-slate-800">
-            <div id="betLowBar" class="bg-cyan-400 h-full" style="width: 40%;"></div>
-            <div id="betMidBar" class="bg-amber-400 h-full" style="width: 45%;"></div>
-            <div id="betHighBar" class="bg-pink-500 h-full" style="width: 15%;"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SIDE METRICS BETIKA -->
-      <div class="lg:col-span-4 space-y-4">
-        <div class="glass-panel rounded-3xl p-5">
-          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3">Betika Crash History</h3>
-          <div id="betikaHistoryContainer" class="flex gap-2 flex-wrap max-h-64 overflow-y-auto">
-            <span class="text-xs text-slate-500">No multipliers recorded yet.</span>
-          </div>
-        </div>
-      </div>
-
+    <div style="background:#050a14; padding:16px; border-radius:12px; border:1px solid var(--panel-border); margin-bottom:16px; text-align:left;">
+      <div style="font-weight:800; color:#fff; margin-bottom:4px;">Initial Access Recharge</div>
+      <div style="font-size:20px; font-weight:900; color:var(--gold);">499 KSh / 2 Days (48 Hours)</div>
+      <div style="font-size:11px; color:var(--muted); margin-top:4px;">Next renewal rate: 816 KSh / 1 Month</div>
     </div>
+
+    <input type="text" id="phoneInput" placeholder="M-Pesa Phone Number (07...)" style="margin-bottom:12px; text-align:center;" />
+    <button class="btn btn-purple" style="width:100%;" onclick="simulatePayment()">Unlock Unlimited Access</button>
   </div>
-
-  <!-- ROULETTE CHRONOLOGY HISTORY -->
-  <div id="rouletteHistorySection" class="glass-panel rounded-3xl p-6 mt-6">
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-xs font-black uppercase tracking-wider text-slate-400">Recent Spin Chronology (Roulette)</h3>
-      <span id="historyCount" class="text-xs font-bold text-cyan-400">0 entries</span>
-    </div>
-    <div id="historyContainer" class="flex gap-2 flex-wrap max-h-40 overflow-y-auto p-1">
-      <div class="text-xs text-slate-500">No spins recorded yet. Inject test data or connect live API.</div>
-    </div>
-  </div>
-
 </div>
 
 <script>
-// European Wheel Sequence & Colors
-const RED_NUMS = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
-const WHEEL_ORDER = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+let currentGame = 'odibet';
+let sessionData = {
+  odibet: [],
+  betika: [],
+  roulette: []
+};
+let roundCount = 0;
+let isSubscribed = false;
 
-// State Storage
-let spins = JSON.parse(localStorage.getItem("proHistoryRoulette") || "[]");
-let odibetHistory = JSON.parse(localStorage.getItem("proHistoryOdibet") || "[]");
-let betikaHistory = JSON.parse(localStorage.getItem("proHistoryBetika") || "[]");
-
-let registeredUsers = JSON.parse(localStorage.getItem("rouletteUsers") || "{}");
-let currentUser = JSON.parse(localStorage.getItem("rouletteCurrentUser") || "null");
-
-let currentGame = "roulette"; // "roulette", "odibet", "betika"
-let selectedTier = 1; // 1 = 499 KSh (2 Days), 2 = 816 KSh (1 Month)
-
-const $ = id => document.getElementById(id);
-
-function getColor(num) {
-  if (num === 0) return "green";
-  return RED_NUMS.includes(num) ? "red" : "black";
-}
-
-// SWITCH GAME TABS
 function switchGame(game) {
   currentGame = game;
-  
-  // Highlight active tab
-  ["Roulette", "Odibet", "Betika"].forEach(g => {
-    const tab = $("tab" + g);
-    if (g.toLowerCase() === game) {
-      tab.classList.add("active-tab");
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+
+  if(game === 'roulette') {
+    document.getElementById('gameTitle').textContent = 'Roulette Live Entry Logging';
+    document.getElementById('liveInput').placeholder = 'Enter pocket number (0 - 36)';
+  } else {
+    document.getElementById('gameTitle').textContent = (game === 'odibet' ? 'Odibet' : 'Betika') + ' Live Entry Logging';
+    document.getElementById('liveInput').placeholder = 'Enter finished multiplier (e.g. 1.35)';
+  }
+  renderStats();
+}
+
+function addManualEntry() {
+  if (!isSubscribed && roundCount >= 5) {
+    document.getElementById('paywallModal').style.display = 'flex';
+    return;
+  }
+
+  const input = document.getElementById('liveInput');
+  const val = parseFloat(input.value);
+
+  if (isNaN(val) || val < 0) {
+    alert('Please enter a valid numeric result.');
+    return;
+  }
+
+  if (currentGame === 'roulette' && val > 36) {
+    alert('Roulette pockets must be between 0 and 36.');
+    return;
+  }
+
+  sessionData[currentGame].unshift(val);
+  roundCount++;
+  document.getElementById('trialCount').textContent = Math.min(roundCount, 5);
+  input.value = '';
+
+  renderStats();
+
+  if (!isSubscribed && roundCount >= 5) {
+    document.getElementById('paywallModal').style.display = 'flex';
+  }
+}
+
+function renderStats() {
+  const list = sessionData[currentGame];
+  document.getElementById('totalRounds').textContent = list.length;
+
+  if (list.length === 0) {
+    document.getElementById('avgMultiplier').textContent = '0.00x';
+    document.getElementById('highRate').textContent = '0.0%';
+    document.getElementById('historyTags').innerHTML = '<span style="font-size:12px; color:var(--muted);">No rounds recorded yet. Type a result above to begin tracking.</span>';
+    return;
+  }
+
+  // Calculate Metrics
+  const sum = list.reduce((a, b) => a + b, 0);
+  const avg = (sum / list.length).toFixed(2);
+  document.getElementById('avgMultiplier').textContent = currentGame === 'roulette' ? avg : avg + 'x';
+
+  if (currentGame !== 'roulette') {
+    const highHits = list.filter(x => x >= 2.0).length;
+    const rate = ((highHits / list.length) * 100).toFixed(1);
+    document.getElementById('highRate').textContent = rate + '%';
+  } else {
+    document.getElementById('highRate').textContent = 'N/A';
+  }
+
+  // Render History
+  const historyHtml = list.map(item => {
+    let cls = 'low';
+    if (currentGame === 'roulette') {
+      cls = item === 0 ? 'zero' : ([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].includes(item) ? 'low' : 'high');
     } else {
-      tab.classList.remove("active-tab");
+      cls = item >= 2.0 ? 'high' : 'low';
     }
-  });
+    return `<div class="tag ${cls}">${item}${currentGame === 'roulette' ? '' : 'x'}</div>`;
+  }).join('');
 
-  // Toggle views
-  $("viewRoulette").classList.toggle("hidden", game !== "roulette");
-  $("viewOdibet").classList.toggle("hidden", game !== "odibet");
-  $("viewBetika").classList.toggle("hidden", game !== "betika");
-  $("rouletteHistorySection").classList.toggle("hidden", game !== "roulette");
-
-  $("currentGameLabel").textContent = `ACTIVE ENGINE: ${game.toUpperCase()} ANALYZER`;
-
-  checkSubscriptionStatus();
-  renderCurrentDashboard();
+  document.getElementById('historyTags').innerHTML = historyHtml;
 }
 
-// AUTHENTICATION LOGIC
-function initAuth() {
-  if (!currentUser) {
-    $("authModal").classList.remove("hidden");
-  } else {
-    $("authModal").classList.add("hidden");
-    $("accountBtnLabel").textContent = currentUser.name || "Account";
-    checkSubscriptionStatus();
-    renderCurrentDashboard();
-  }
+function clearSession() {
+  sessionData[currentGame] = [];
+  renderStats();
 }
 
-$("showLoginLink").onclick = (e) => {
-  e.preventDefault();
-  $("registerForm").classList.add("hidden");
-  $("loginForm").classList.remove("hidden");
-  $("authTitle").textContent = "Login to Your Account";
-};
-
-$("showRegLink").onclick = (e) => {
-  e.preventDefault();
-  $("loginForm").classList.add("hidden");
-  $("registerForm").classList.remove("hidden");
-  $("authTitle").textContent = "Pro Predictive Engine";
-};
-
-$("registerForm").onsubmit = (e) => {
-  e.preventDefault();
-  const name = $("regName").value.trim();
-  const account = $("regAccount").value.trim().toLowerCase();
-  const pass = $("regPass").value;
-
-  if (registeredUsers[account]) {
-    alert("Account already exists. Please login.");
+function simulatePayment() {
+  const phone = document.getElementById('phoneInput').value;
+  if (!phone || phone.length < 10) {
+    alert('Please enter a valid M-Pesa phone number.');
     return;
   }
-
-  const newUser = {
-    name,
-    account,
-    pass,
-    roundsUsed: 0,
-    hasHadFirstRecharge: false,
-    expiryTimestamp: null
-  };
-
-  registeredUsers[account] = newUser;
-  currentUser = newUser;
-  saveUsersState();
-  initAuth();
-};
-
-$("loginForm").onsubmit = (e) => {
-  e.preventDefault();
-  const account = $("loginAccount").value.trim().toLowerCase();
-  const pass = $("loginPass").value;
-
-  if (!registeredUsers[account] || registeredUsers[account].pass !== pass) {
-    alert("Invalid credentials.");
-    return;
-  }
-
-  currentUser = registeredUsers[account];
-  saveUsersState();
-  initAuth();
-};
-
-$("accountBtn").onclick = () => {
-  if (!currentUser) return;
-  const statusStr = getSubscriptionLabel();
-  if (confirm(`User Account: ${currentUser.name} (${currentUser.account})\nStatus: ${statusStr}\n\nDo you want to log out?`)) {
-    currentUser = null;
-    localStorage.removeItem("rouletteCurrentUser");
-    location.reload();
-  }
-};
-
-function saveUsersState() {
-  localStorage.setItem("rouletteUsers", JSON.stringify(registeredUsers));
-  localStorage.setItem("rouletteCurrentUser", JSON.stringify(currentUser));
+  alert('STK Push Sent to ' + phone + '. Complete the payment to unlock full session access.');
+  isSubscribed = true;
+  document.getElementById('paywallModal').style.display = 'none';
+  document.getElementById('userInfo').textContent = 'Subscription Active (499 KSh / 48 Hours)';
 }
-
-// SUBSCRIPTION & PAYWALL LOGIC
-function checkSubscriptionStatus() {
-  if (!currentUser) return false;
-
-  const now = Date.now();
-  let active = false;
-
-  if (currentUser.expiryTimestamp && currentUser.expiryTimestamp > now) {
-    active = true;
-  } else if (currentUser.roundsUsed < 5) {
-    active = true;
-  } else {
-    active = false;
-  }
-
-  // Update Lock Overlays across game views
-  const overlays = [
-    { overlay: $("lockOverlayRoulette"), text: $("lockTextRoulette") },
-    { overlay: $("lockOverlayOdibet"), text: $("lockTextOdibet") },
-    { overlay: $("lockOverlayBetika"), text: $("lockTextBetika") }
-  ];
-
-  const subText = $("subStatusText");
-
-  if (currentUser.expiryTimestamp && currentUser.expiryTimestamp > now) {
-    const hoursLeft = Math.ceil((currentUser.expiryTimestamp - now) / (1000 * 60 * 60));
-    subText.textContent = `VIP Active (${hoursLeft}h left)`;
-    $("subStatusBadge").querySelector(".animate-pulse").className = "w-2.5 h-2.5 rounded-full bg-emerald-400";
-    overlays.forEach(o => o.overlay.classList.add("hidden"));
-  } else if (currentUser.roundsUsed < 5) {
-    subText.textContent = `Free Trial (${currentUser.roundsUsed}/5)`;
-    $("subStatusBadge").querySelector(".animate-pulse").className = "w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse";
-    overlays.forEach(o => o.overlay.classList.add("hidden"));
-  } else {
-    subText.textContent = `Trial Expired`;
-    $("subStatusBadge").querySelector(".animate-pulse").className = "w-2.5 h-2.5 rounded-full bg-pink-500";
-    
-    const msg = !currentUser.hasHadFirstRecharge
-      ? "Your 5 trial prediction signals have ended. Recharge 499 KSh for 2 Days (48 Hours) full access."
-      : "Your 2-day pass has expired. Renewal recharge is 816 KSh for 1 Month (30 Days) access.";
-
-    overlays.forEach(o => {
-      o.text.textContent = msg;
-      o.overlay.classList.remove("hidden");
-    });
-  }
-
-  return active;
-}
-
-function openRechargeModal() {
-  if (!currentUser) return;
-  if (!currentUser.hasHadFirstRecharge) selectTier(1);
-  else selectTier(2);
-
-  $("payPhone").value = currentUser.account.match(/^\d+$/) ? currentUser.account : "";
-  $("rechargeModal").classList.remove("hidden");
-}
-
-function selectTier(tier) {
-  selectedTier = tier;
-  if (tier === 1) {
-    $("tier1Box").className = "p-5 rounded-2xl border-2 border-amber-400 bg-amber-500/10 cursor-pointer transition-all hover:scale-102";
-    $("tier2Box").className = "p-5 rounded-2xl border border-slate-700 bg-slate-900/60 opacity-60 cursor-pointer transition-all hover:scale-102";
-    $("selectedPlanText").value = "1st Recharge: 499 KSh for 2 Days (48 Hours)";
-  } else {
-    $("tier2Box").className = "p-5 rounded-2xl border-2 border-purple-500 bg-purple-500/10 cursor-pointer transition-all hover:scale-102";
-    $("tier1Box").className = "p-5 rounded-2xl border border-slate-700 bg-slate-900/60 opacity-60 cursor-pointer transition-all hover:scale-102";
-    $("selectedPlanText").value = "Renewal Plan: 816 KSh for 1 Month (30 Days)";
-  }
-}
-
-$("closePaywallBtn").onclick = () => $("rechargeModal").classList.add("hidden");
-
-$("paymentForm").onsubmit = (e) => {
-  e.preventDefault();
-  const phone = $("payPhone").value.trim();
-  const status = $("paymentStatus");
-
-  if (!phone) {
-    alert("Enter valid mobile phone number.");
-    return;
-  }
-
-  status.textContent = "⌛ Initiating Mobile Payment Push...";
-  $("paySubmitBtn").disabled = true;
-
-  setTimeout(() => {
-    status.textContent = "✅ Payment Confirmed! Unlocking Signals...";
-    const now = Date.now();
-    
-    if (selectedTier === 1) {
-      currentUser.expiryTimestamp = now + (48 * 60 * 60 * 1000);
-      currentUser.hasHadFirstRecharge = true;
-    } else {
-      currentUser.expiryTimestamp = now + (30 * 24 * 60 * 60 * 1000);
-    }
-
-    registeredUsers[currentUser.account] = currentUser;
-    saveUsersState();
-
-    setTimeout(() => {
-      $("paySubmitBtn").disabled = false;
-      status.textContent = "";
-      $("rechargeModal").classList.add("hidden");
-      checkSubscriptionStatus();
-      renderCurrentDashboard();
-    }, 1200);
-  }, 1800);
-};
-
-function getSubscriptionLabel() {
-  if (!currentUser) return "None";
-  if (currentUser.expiryTimestamp && currentUser.expiryTimestamp > Date.now()) {
-    const hrs = Math.ceil((currentUser.expiryTimestamp - Date.now()) / (1000*60*60));
-    return `VIP Active (${hrs} Hours Remaining)`;
-  }
-  if (currentUser.roundsUsed < 5) return `Trial (${currentUser.roundsUsed}/5 Rounds Used)`;
-  return "Expired";
-}
-
-function consumeRoundAndCheck() {
-  if (!currentUser) return;
-  const now = Date.now();
-  if (!currentUser.expiryTimestamp || currentUser.expiryTimestamp <= now) {
-    currentUser.roundsUsed = (currentUser.roundsUsed || 0) + 1;
-    registeredUsers[currentUser.account] = currentUser;
-    saveUsersState();
-  }
-  checkSubscriptionStatus();
-}
-
-// RENDER DASHBOARDS
-function renderCurrentDashboard() {
-  if (currentGame === "roulette") renderRoulette();
-  else if (currentGame === "odibet") renderOdibet();
-  else if (currentGame === "betika") renderBetika();
-}
-
-// 1. ROULETTE ENGINE
-function renderRoulette() {
-  const data = spins.slice(0, 1000);
-  const total = data.length;
-  $("sampleSize").textContent = total;
-
-  if (total === 0) return;
-
-  const rCount = data.filter(n => getColor(n) === "red").length;
-  const bCount = data.filter(n => getColor(n) === "black").length;
-  const gCount = data.filter(n => getColor(n) === "green").length;
-
-  $("redPct").textContent = ((rCount / total) * 100).toFixed(1) + "%";
-  $("blackPct").textContent = ((bCount / total) * 100).toFixed(1) + "%";
-  $("zeroPct").textContent = ((gCount / total) * 100).toFixed(1) + "%";
-
-  const pRed = (rCount / total) * 100;
-  const pBlack = (bCount / total) * 100;
-  const pGreen = (gCount / total) * 100;
-
-  $("pBarRed").style.width = pRed + "%";
-  $("pBarBlack").style.width = pBlack + "%";
-  $("pBarGreen").style.width = pGreen + "%";
-
-  $("pValRed").textContent = pRed.toFixed(1) + "%";
-  $("pValBlack").textContent = pBlack.toFixed(1) + "%";
-  $("pValGreen").textContent = pGreen.toFixed(1) + "%";
-
-  let predicted = "RED", cls = "bg-red-500/20 text-red-400 border-red-500/40";
-  if (pBlack > pRed && pBlack > pGreen) {
-    predicted = "BLACK";
-    cls = "bg-slate-700/40 text-slate-200 border-slate-500";
-  } else if (pGreen > pRed && pGreen > pBlack) {
-    predicted = "ZERO";
-    cls = "bg-emerald-500/20 text-emerald-400 border-emerald-500/40";
-  }
-
-  $("predColorBadge").textContent = predicted;
-  $("predColorBadge").className = `inline-block px-8 py-3 rounded-2xl text-3xl font-black uppercase tracking-wider border shadow-2xl my-2 ${cls}`;
-  $("predConfidenceRoulette").textContent = `Engine Confidence: ${Math.min(75 + total/10, 94.8).toFixed(1)}%`;
-
-  renderHistoryUI(data);
-}
-
-// 2. ODIBET ENGINE
-function renderOdibet() {
-  if (odibetHistory.length === 0) return;
-  const lastMult = odibetHistory[0];
-  $("odibetMultiplier").textContent = lastMult.toFixed(2) + "x";
-
-  // Calculate safe and high target multipliers based on crash velocity algorithm
-  const safe = (1.15 + (Math.random() * 0.25)).toFixed(2);
-  const mid = (2.00 + (Math.random() * 0.8)).toFixed(2);
-  const high = (4.50 + (Math.random() * 4.0)).toFixed(2);
-
-  $("odibetSafe").textContent = safe + "x";
-  $("odibetMid").textContent = mid + "x";
-  $("odibetHigh").textContent = high + "x";
-
-  // Render Multiplier Log
-  $("odibetHistoryContainer").innerHTML = odibetHistory.map(m => {
-    let cls = "mult-low";
-    if (m >= 10) cls = "mult-jackpot";
-    else if (m >= 2) cls = "mult-mid";
-    return `<span class="multiplier-pill ${cls}">${m.toFixed(2)}x</span>`;
-  }).join("");
-}
-
-// 3. BETIKA ENGINE
-function renderBetika() {
-  if (betikaHistory.length === 0) return;
-  const lastMult = betikaHistory[0];
-  $("betikaMultiplier").textContent = lastMult.toFixed(2) + "x";
-
-  const safe = (1.20 + (Math.random() * 0.20)).toFixed(2);
-  const mid = (2.20 + (Math.random() * 0.90)).toFixed(2);
-  const high = (8.00 + (Math.random() * 12.0)).toFixed(2);
-
-  $("betikaSafe").textContent = safe + "x";
-  $("betikaMid").textContent = mid + "x";
-  $("betikaHigh").textContent = high + "x";
-
-  $("betikaHistoryContainer").innerHTML = betikaHistory.map(m => {
-    let cls = "mult-low";
-    if (m >= 10) cls = "mult-high";
-    else if (m >= 2) cls = "mult-mid";
-    return `<span class="multiplier-pill ${cls}">${m.toFixed(2)}x</span>`;
-  }).join("");
-}
-
-function renderHistoryUI(data) {
-  $("historyCount").textContent = `${data.length} entries`;
-  $("historyContainer").innerHTML = data.map(n => {
-    let c = getColor(n);
-    let bg = c === "red" ? "bg-red-500" : c === "black" ? "bg-slate-700" : "bg-emerald-500";
-    return `<div class="w-9 h-9 rounded-full ${bg} flex items-center justify-center font-black text-xs text-white shadow-md border border-white/20">${n}</div>`;
-  }).join("");
-}
-
-// DEMO / SIGNAL INJECTION ENGINE
-$("demoBtn").onclick = () => {
-  consumeRoundAndCheck();
-
-  if (currentGame === "roulette") {
-    const mock = Array.from({length: 15}, () => Math.floor(Math.random() * 37));
-    spins = mock.concat(spins).slice(0, 1000);
-    localStorage.setItem("proHistoryRoulette", JSON.stringify(spins));
-  } else if (currentGame === "odibet") {
-    const mult = Number((1.01 + Math.pow(Math.random(), 3) * 15).toFixed(2));
-    odibetHistory.unshift(mult);
-    localStorage.setItem("proHistoryOdibet", JSON.stringify(odibetHistory));
-  } else if (currentGame === "betika") {
-    const mult = Number((1.01 + Math.pow(Math.random(), 2.8) * 18).toFixed(2));
-    betikaHistory.unshift(mult);
-    localStorage.setItem("proHistoryBetika", JSON.stringify(betikaHistory));
-  }
-
-  renderCurrentDashboard();
-};
-
-$("clearBtn").onclick = () => {
-  if (confirm("Clear local history for current engine?")) {
-    if (currentGame === "roulette") spins = [];
-    else if (currentGame === "odibet") odibetHistory = [];
-    else if (currentGame === "betika") betikaHistory = [];
-    renderCurrentDashboard();
-  }
-};
-
-initAuth();
 </script>
+
 </body>
 </html>
-```
